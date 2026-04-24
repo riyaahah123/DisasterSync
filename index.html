@@ -1525,28 +1525,40 @@
                 }
             });
 
-            // Sample coordinates for major Indian cities if no lat/lng in data
-            const cityCoordinates = {
-                'Mumbai': [19.0760, 72.8777],
-                'Delhi': [28.7041, 77.1025],
-                'Chennai': [13.0827, 80.2707],
-                'Kolkata': [22.5726, 88.3639],
-                'Bangalore': [12.9716, 77.5946],
-                'Hyderabad': [17.3850, 78.4867]
+            // Case-insensitive coordinate helper for major Indian cities
+            const getCoordinates = (locationString) => {
+                if (!locationString) return null;
+                const normalized = locationString.toLowerCase().trim();
+                const cities = {
+                    'mumbai': [19.0760, 72.8777],
+                    'delhi': [28.7041, 77.1025],
+                    'chennai': [13.0827, 80.2707],
+                    'kolkata': [22.5726, 88.3639],
+                    'bangalore': [12.9716, 77.5946],
+                    'hyderabad': [17.3850, 78.4867],
+                    'pune': [18.5204, 73.8567],
+                    'ahmedabad': [23.0225, 72.5714]
+                };
+                for (const [city, coords] of Object.entries(cities)) {
+                    if (normalized.includes(city)) return coords;
+                }
+                return null;
             };
 
             operationsData.forEach(op => {
                 let lat = null, lng = null;
+                const coords = getCoordinates(op.location_name) || getCoordinates(op.zone);
 
-                if (op.location_name && cityCoordinates[op.location_name]) {
-                    lat = cityCoordinates[op.location_name][0];
-                    lng = cityCoordinates[op.location_name][1];
+                if (coords) {
+                    lat = coords[0] + (Math.random() * 0.05 - 0.025); // Add jitter to prevent stacking
+                    lng = coords[1] + (Math.random() * 0.05 - 0.025);
                 } else if (op.lat && op.lng) {
-                    lat = op.lat;
-                    lng = op.lng;
-                } else if (op.zone && cityCoordinates[op.zone]) {
-                    lat = cityCoordinates[op.zone][0];
-                    lng = cityCoordinates[op.zone][1];
+                    lat = op.lat + (Math.random() * 0.05 - 0.025);
+                    lng = op.lng + (Math.random() * 0.05 - 0.025);
+                } else {
+                    // Fallback to random coordinates in central India
+                    lat = 20.5937 + (Math.random() * 5 - 2.5);
+                    lng = 78.9629 + (Math.random() * 5 - 2.5);
                 }
 
                 if (lat && lng) {
@@ -1574,9 +1586,11 @@
             // Plot pending unmet needs
             unmetNeedsData.forEach(req => {
                 let lat = null, lng = null;
-                if (req.location && cityCoordinates[req.location]) {
-                    lat = cityCoordinates[req.location][0] + (Math.random() * 0.05 - 0.025);
-                    lng = cityCoordinates[req.location][1] + (Math.random() * 0.05 - 0.025);
+                const coords = getCoordinates(req.location);
+                
+                if (coords) {
+                    lat = coords[0] + (Math.random() * 0.05 - 0.025);
+                    lng = coords[1] + (Math.random() * 0.05 - 0.025);
                 } else {
                     lat = 20.5937 + (Math.random() * 5 - 2.5);
                     lng = 78.9629 + (Math.random() * 5 - 2.5);
