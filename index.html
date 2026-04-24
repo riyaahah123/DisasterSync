@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>DisasterSync | Intelligent Disaster Coordination Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F8FAFC;
+            color: #1E293B;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: #111827;
+            color: #F1F5F9;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%);
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 32px;
+            padding: 48px;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        body.dark-mode .auth-card {
+            background: #1F2937;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .auth-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .auth-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .auth-tab {
+            padding: 14px;
+            border: 2px solid #E2E8F0;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        body.dark-mode .auth-tab {
+            background: #1F2937;
+            border-color: #374151;
+            color: #F1F5F9;
+        }
+
+        .auth-tab.active {
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            color: white;
+            border-color: transparent;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4B5563;
+        }
+
+        body.dark-mode .input-group label {
+            color: #9CA3AF;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E2E8F0;
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        body.dark-mode .input-group input,
+        body.dark-mode .input-group select {
+            background: #374151;
+            border-color: #4B5563;
+            color: white;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-msg {
+            color: #EF4444;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .success-msg {
+            color: #10B981;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            display: none;
+        }
+
+        .dashboard-container.active {
+            display: block;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            border-right: 1px solid #E2E8F0;
+            z-index: 1000;
+            transition: all 0.3s;
+            overflow-y: auto;
+        }
+
+        body.dark-mode .sidebar {
+            background: #1F2937;
+            border-right-color: #374151;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-280px);
+        }
+
+        .sidebar-header {
+            padding: 32px 24px;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        body.dark-mode .sidebar-header {
+            border-bottom-color: #374151;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .user-info {
+            padding: 20px 24px;
+            background: #F1F5F9;
+            margin: 16px 12px;
+            border-radius: 20px;
+        }
+
+        body.dark-mode .user-info {
+            background: #374151;
+        }
+
+        .nav-item {
+            padding: 12px 24px;
+            margin: 4px 12px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            border-radius: 16px;
+            transition: all 0.2s;
+            color: #64748B;
+        }
+
+        body.dark-mode .nav-item {
+            color: #9CA3AF;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #F1F5F9;
+            color: #6366F1;
+        }
+
+        body.dark-mode .nav-item:hover,
+        body.dark-mode .nav-item.active {
+            background: #374151;
+            color: #8B5CF6;
+        }
+
+        .logout-btn {
+            margin: 20px 12px;
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 16px;
+            color: #EF4444;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            transition: margin-left 0.3s;
+            padding: 24px 32px;
+            min-height: 100vh;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        .toggle-sidebar {
+            position: fixed;
+            left: 280px;
+            top: 24px;
+            background: white;
+            border: 1px solid #E2E8F0;
+            color: #6366F1;
+            width: 44px;
+            height: 44px;
+            border-radius: 16px;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s;
+        }
+
+        body.dark-mode .toggle-sidebar {
+            background: #1F2937;
+            border-color: #374151;
+        }
+
+        .toggle-sidebar.collapsed {
+            left: 20px;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            right: 24px;
+            top: 24px;
+            background: white;
+            border: 1px solid #E2E8F0;
+            width: 44px;
+            height: 44px;
+            border-radius: 16px;
+            cursor: pointer;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.dark-mode .theme-toggle {
+            background: #1F2937;
+            border-color: #374151;
+            color: #F1F5F9;
+        }
+
+        /* Stats Grid - Bento */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid #E2E8F0;
+            transition: all 0.2s;
+        }
+
+        body.dark-mode .stat-card {
+            background: #1F2937;
+            border-color: #374151;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #6366F1;
+            margin: 8px 0;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #64748B;
+        }
+
+        body.dark-mode .stat-label {
+            color: #9CA3AF;
+        }
+
+        /* Bento Grid */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .bento-card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid #E2E8F0;
+        }
+
+        body.dark-mode .bento-card {
+            background: #1F2937;
+            border-color: #374151;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .activity-item {
+            padding: 14px;
+            border-radius: 16px;
+            background: #F8FAFC;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid #6366F1;
+        }
+
+        body.dark-mode .activity-item {
+            background: #374151;
+        }
+
+        .campaign-item {
+            padding: 16px;
+            border-radius: 20px;
+            background: #F8FAFC;
+            margin-bottom: 12px;
+        }
+
+        body.dark-mode .campaign-item {
+            background: #374151;
+        }
+
+        .progress-bar {
+            background: #E2E8F0;
+            border-radius: 20px;
+            height: 8px;
+            margin: 12px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #6366F1, #8B5CF6);
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.5s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Map */
+        #fullMap {
+            height: 550px;
+            width: 100%;
+            border-radius: 20px;
+            z-index: 1;
+        }
+
+        /* Floating AI */
+        .ai-float-circle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2000;
+            color: white;
+            font-size: 28px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .ai-popup {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 380px;
+            height: 500px;
+            background: white;
+            border-radius: 24px;
+            z-index: 2001;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-mode .ai-popup {
+            background: #1F2937;
+        }
+
+        .ai-popup.active {
+            display: flex;
+        }
+
+        .ai-popup-header {
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .close-ai {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .ai-chat-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .ai-message {
+            padding: 10px 14px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            max-width: 85%;
+        }
+
+        .user-msg {
+            background: #6366F1;
+            color: white;
+            margin-left: auto;
+        }
+
+        .ai-msg {
+            background: #F1F5F9;
+            color: #1E293B;
+        }
+
+        body.dark-mode .ai-msg {
+            background: #374151;
+            color: white;
+        }
+
+        .ai-input-area {
+            padding: 16px;
+            border-top: 1px solid #E2E8F0;
+            display: flex;
+            gap: 10px;
+        }
+
+        body.dark-mode .ai-input-area {
+            border-top-color: #374151;
+        }
+
+        .ai-input-area input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 24px;
+            border: 1px solid #E2E8F0;
+        }
+
+        body.dark-mode .ai-input-area input {
+            background: #374151;
+            border-color: #4B5563;
+            color: white;
+        }
+
+        /* Antigravity Glassmorphic Form - Command Center */
+        @keyframes breatheIcon {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.15); }
+        }
+
+        .glass-form-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.05em;
+        }
+
+        body.dark-mode .glass-form-card {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.15), 0 0 50px rgba(236, 72, 153, 0.05), inset 0 0 0 1px rgba(255,255,255,0.05);
+        }
+
+        body.dark-mode .glass-form-card::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #8B5CF6, #EC4899);
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .glass-form-card h3 {
+            margin-bottom: 32px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #1E293B;
+            position: relative;
+            z-index: 1;
+        }
+
+        body.dark-mode .glass-form-card h3 {
+            color: #E2E8F0;
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        .fluid-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .glass-input-wrapper i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            color: #64748B;
+            z-index: 2;
+            animation: breatheIcon 4s infinite ease-in-out;
+            transition: all 0.3s ease;
+            transform: translateY(-50%);
+        }
+        
+        body.dark-mode .glass-input-wrapper i {
+            background: linear-gradient(135deg, #9CA3AF, #6B7280);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glass-input-wrapper input,
+        .glass-input-wrapper select,
+        .glass-input-wrapper textarea {
+            width: 100%;
+            padding: 16px 16px 16px 52px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(139, 92, 246, 0.2);
+            border-radius: 16px;
+            color: #1E293B;
+            font-size: 0.95rem;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+            font-family: inherit;
+        }
+        
+        .glass-input-wrapper textarea {
+            resize: vertical;
+        }
+
+        body.dark-mode .glass-input-wrapper input,
+        body.dark-mode .glass-input-wrapper select,
+        body.dark-mode .glass-input-wrapper textarea {
+            background: rgba(0, 0, 0, 0.25);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            color: #F8FAFC;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-mode .glass-input-wrapper select option {
+            background: #1E293B;
+            color: #F8FAFC;
+        }
+
+        .glass-input-wrapper input:focus,
+        .glass-input-wrapper select:focus,
+        .glass-input-wrapper textarea:focus {
+            outline: none;
+            background: #ffffff;
+            border-color: #8B5CF6;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+        }
+
+        body.dark-mode .glass-input-wrapper input:focus,
+        body.dark-mode .glass-input-wrapper select:focus,
+        body.dark-mode .glass-input-wrapper textarea:focus {
+            background: rgba(15, 23, 42, 0.6);
+            border-color: #8B5CF6;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.25);
+        }
+
+        .glass-input-wrapper:focus-within i {
+            color: #8B5CF6;
+            background: none;
+            -webkit-text-fill-color: initial;
+            text-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Antigravity Glassmorphic Pill Button */
+        .btn-antigravity {
+            position: relative;
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            height: 100%;
+            min-height: 54px;
+            overflow: hidden;
+        }
+
+        .btn-antigravity::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: skewX(-25deg);
+            transition: 0.6s ease-in-out;
+        }
+
+        .btn-antigravity:hover::after {
+            left: 150%;
+        }
+
+        .btn-antigravity:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .btn-antigravity:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Auth Container -->
+    <div id="authContainer" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1><i class="fas fa-satellite-dish"></i> DisasterSync</h1>
+            </div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-auth="login">Login</button>
+                <button class="auth-tab" data-auth="register">Register</button>
+            </div>
+            <div id="loginForm">
+                <div class="input-group"><label>Email</label><input type="email" id="loginEmail"
+                        placeholder="Enter your email"></div>
+                <div class="input-group"><label>Password</label><input type="password" id="loginPassword"
+                        placeholder="Enter your password"></div>
+                <div id="loginError" class="error-msg"></div>
+                <button class="auth-btn" id="loginBtn">Login →</button>
+            </div>
+            <div id="registerForm" style="display: none;">
+                <div class="input-group"><label>Full Name</label><input type="text" id="regName"
+                        placeholder="Your full name"></div>
+                <div class="input-group"><label>Email</label><input type="email" id="regEmail"
+                        placeholder="Enter your email"></div>
+                <div class="input-group"><label>Password</label><input type="password" id="regPassword"
+                        placeholder="Create a password"></div>
+                <div class="input-group"><label>Role</label><select id="regRole">
+                        <option value="operations">Operations Admin</option>
+                        <option value="donations">Donations Manager</option>
+                    </select></div>
+                <div id="registerError" class="error-msg"></div>
+                <button class="auth-btn" id="registerBtn">Register →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Container -->
+    <div id="dashboardContainer" class="dashboard-container">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-satellite-dish"></i> DisasterSync</h2>
+            </div>
+            <div class="user-info" id="userInfoDisplay"></div>
+            <div class="sidebar-nav">
+                <div class="nav-item active" data-page="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</div>
+                <div class="nav-item" data-page="operations"><i class="fas fa-clipboard-list"></i> Field Ops</div>
+                <div class="nav-item" data-page="map"><i class="fas fa-map-marked-alt"></i> Response Map</div>
+                <div class="nav-item" data-page="donations"><i class="fas fa-hand-holding-heart"></i> Donations</div>
+            </div>
+            <div class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</div>
+        </div>
+        <button class="toggle-sidebar" id="toggleSidebarBtn"><i class="fas fa-bars"></i></button>
+        <button class="theme-toggle" id="themeToggleBtn"><i class="fas fa-moon"></i></button>
+        <div class="main-content" id="mainContent">
+            <div id="dashboardPage" class="dashboard-page">
+                <div class="stats-grid" id="statsGrid"></div>
+                <div class="bento-grid">
+                    <div class="bento-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-clock"></i> Recent Operations</h3>
+                        </div>
+                        <div id="recentOpsList"></div>
+                    </div>
+                    <div class="bento-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-hand-holding-heart"></i> Recent Donations</h3>
+                        </div>
+                        <div id="recentDonationsList"></div>
+                    </div>
+                </div>
+                <div class="bento-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-line"></i> Campaign Progress</h3>
+                    </div>
+                    <div id="campaignProgressList"></div>
+                </div>
+            </div>
+            <div id="operationsPage" class="dashboard-page" style="display: none;">
+                <div class="glass-form-card">
+                    <h3>Log New Field Activity</h3>
+                    <div class="fluid-grid">
+                        <div class="glass-input-wrapper">
+                            <i class="fas fa-building"></i>
+                            <input type="text" id="opAgency" placeholder="Agency Name">
+                        </div>
+                        <div class="glass-input-wrapper">
+                            <i class="fas fa-layer-group"></i>
+                            <input type="text" id="opSector" placeholder="Sector">
+                        </div>
+                        <div class="glass-input-wrapper">
+                            <i class="fas fa-map"></i>
+                            <input type="text" id="opZone" placeholder="Zone">
+                        </div>
+                        <div class="glass-input-wrapper">
+                            <i class="fas fa-users"></i>
+                            <input type="number" id="opBeneficiaries" placeholder="Beneficiaries">
+                        </div>
+                        <div class="glass-input-wrapper">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <input type="text" id="opLocation" placeholder="Location">
+                        </div>
+                        <div style="display: flex; align-items: stretch;">
+                            <button id="logOpBtn" class="btn-antigravity">
+                                <i class="fas fa-paper-plane"></i> Log Activity
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bento-card">
+                    <h3>All Operations</h3>
+                    <div id="allOpsList" style="max-height: 400px; overflow-y: auto;"></div>
+                </div>
+            </div>
+            <div id="mapPage" class="dashboard-page" style="display: none;">
+                <div class="bento-card">
+                    <div id="fullMap" style="height: 550px; width: 100%;"></div>
+                </div>
+            </div>
+            <div id="donationsPage" class="dashboard-page" style="display: none;">
+                <div class="bento-grid">
+                    <div class="glass-form-card">
+                        <h3>Make a Donation</h3>
+                        <div style="display: flex; flex-direction: column; gap: 24px; position: relative; z-index: 1;">
+                            <div class="glass-input-wrapper">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="donorName" placeholder="Full Name">
+                            </div>
+                            <div class="glass-input-wrapper">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="donorEmail" placeholder="Email">
+                            </div>
+                            <div class="glass-input-wrapper">
+                                <i class="fas fa-hands-helping"></i>
+                                <select id="donationCampaign">
+                                    <option value="" disabled selected>Select Campaign</option>
+                                    <option value="food">Food Relief</option>
+                                    <option value="medical">Medical Aid</option>
+                                    <option value="shelter">Emergency Shelter</option>
+                                    <option value="water">Clean Water</option>
+                                </select>
+                            </div>
+                            <div class="glass-input-wrapper">
+                                <i class="fas fa-dollar-sign"></i>
+                                <input type="number" id="donationAmount" placeholder="Amount (USD)">
+                            </div>
+                            <div class="glass-input-wrapper">
+                                <i class="fas fa-comment-dots" style="top: 26px; transform: none;"></i>
+                                <textarea id="donationMessage" rows="3" placeholder="Message (optional)"></textarea>
+                            </div>
+                            <button id="submitDonationBtn" class="btn-antigravity" style="margin-top: 8px;">
+                                <i class="fas fa-heart"></i> Donate Now
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bento-card">
+                        <h3>Recent Donors</h3>
+                        <div id="donorsList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ai-float-circle" id="aiFloatBtn"><i class="fas fa-robot"></i></div>
+        <div class="ai-popup" id="aiPopup">
+            <div class="ai-popup-header">
+                <h3><i class="fas fa-microchip"></i> AI Agent</h3><button class="close-ai"
+                    id="closeAiPopup">&times;</button>
+            </div>
+            <div class="ai-chat-area" id="aiChatMessages">
+                <div class="ai-message ai-msg">🤖 AI Agent Ready. Ask me about coordination, donations, or recovery
+                    strategies!</div>
+            </div>
+            <div class="ai-input-area"><input type="text" id="aiUserInput" placeholder="Ask me anything..."
+                    onkeypress="if(event.key==='Enter') sendAIMessage()"><button id="sendAiBtn"><i
+                        class="fas fa-paper-plane"></i></button></div>
+        </div>
+    </div>
+
+    <script>
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://pmigoitplpvuzolcjhql.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_L6ln1guRH2RPoUg3obDLGg_vdHSBfkv';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+        let currentRole = null;
+        let fullMap = null;
+        let donationNeeds = {};
+        let operationsData = [];
+        let donationsData = [];
+
+        // Auth Functions
+        async function register() {
+            const fullName = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const role = document.getElementById('regRole').value;
+
+            if (!fullName || !email || !password) {
+                document.getElementById('registerError').innerText = 'Please fill all fields';
+                return;
+            }
+
+            if (password.length < 6) {
+                document.getElementById('registerError').innerText = 'Password must be at least 6 characters';
+                return;
+            }
+
+            document.getElementById('registerError').innerText = '';
+
+            const { data, error } = await supabaseClient.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: { full_name: fullName, role: role }
+                }
+            });
+
+            if (error) {
+                document.getElementById('registerError').innerText = error.message;
+            } else if (data.user) {
+                const { error: profileError } = await supabaseClient
+                    .from('profiles')
+                    .insert([{ id: data.user.id, full_name: fullName, role: role }]);
+
+                if (profileError) {
+                    console.error('Profile insert error:', profileError);
+                }
+
+                document.getElementById('registerError').style.color = '#10B981';
+                document.getElementById('registerError').innerText = 'Registration successful! Please login.';
+                setTimeout(() => {
+                    document.querySelector('.auth-tab[data-auth="login"]').click();
+                    document.getElementById('registerError').innerText = '';
+                }, 2000);
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                document.getElementById('loginError').innerText = 'Please enter email and password';
+                return;
+            }
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                document.getElementById('loginError').innerText = error.message;
+            } else if (data.user) {
+                currentUser = data.user;
+                const { data: profile } = await supabaseClient
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                // Safe fallback to metadata if profile table insert failed due to RLS
+                const userMeta = currentUser.user_metadata || {};
+                currentRole = profile?.role || userMeta.role || 'operations';
+                const displayName = profile?.full_name || userMeta.full_name || currentUser.email;
+
+                document.getElementById('authContainer').style.display = 'none';
+                document.getElementById('dashboardContainer').classList.add('active');
+                document.getElementById('userInfoDisplay').innerHTML = `
+                    <i class="fas fa-user-circle" style="font-size: 1.5rem; margin-bottom: 8px; color: #8B5CF6;"></i>
+                    <div style="font-weight: 600;">${displayName}</div>
+                    <div style="font-size: 0.8rem; color: #64748B; margin-top: 4px;">
+                        ${currentRole === 'operations' ? '<i class="fas fa-hard-hat"></i> Operations Admin' : '<i class="fas fa-hand-holding-usd"></i> Donations Manager'}
+                    </div>
+                `;
+
+                // Role Based UI Access
+                if (currentRole === 'operations') {
+                    document.querySelector('[data-page="donations"]').style.display = 'none';
+                    document.querySelector('[data-page="operations"]').style.display = '';
+                    document.querySelector('[data-page="map"]').style.display = '';
+                } else if (currentRole === 'donations') {
+                    document.querySelector('[data-page="operations"]').style.display = 'none';
+                    document.querySelector('[data-page="map"]').style.display = 'none';
+                    document.querySelector('[data-page="donations"]').style.display = '';
+                }
+
+                loadAllData();
+                // Initialize map after dashboard is visible
+                setTimeout(() => initMap(), 500);
+            }
+        }
+
+        async function logout() {
+            await supabaseClient.auth.signOut();
+            currentUser = null;
+            document.getElementById('dashboardContainer').classList.remove('active');
+            document.getElementById('authContainer').style.display = 'flex';
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            
+            // Reset tab visibility and active page
+            document.querySelector('[data-page="operations"]').style.display = '';
+            document.querySelector('[data-page="map"]').style.display = '';
+            document.querySelector('[data-page="donations"]').style.display = '';
+            document.querySelector('[data-page="dashboard"]').click();
+        }
+
+        // Data Functions
+        async function loadAllData() {
+            await loadDonationNeeds();
+            await loadOperations();
+            await loadDonations();
+            updateUI();
+        }
+
+        async function loadDonationNeeds() {
+            const { data } = await supabaseClient.from('donation_needs').select('*');
+            if (data) {
+                donationNeeds = {};
+                data.forEach(item => { donationNeeds[item.campaign] = item; });
+            }
+        }
+
+        async function loadOperations() {
+            const { data } = await supabaseClient.from('operations').select('*').order('created_at', { ascending: false });
+            operationsData = data || [];
+        }
+
+        async function loadDonations() {
+            const { data } = await supabaseClient.from('donations').select('*').order('created_at', { ascending: false });
+            donationsData = data || [];
+        }
+
+        async function addOperation(agency, sector, zone, beneficiaries, locationName) {
+            if (!agency || !sector || !zone) {
+                alert('Please fill all required fields');
+                return;
+            }
+            const { error } = await supabaseClient.from('operations').insert([{
+                id: Date.now().toString(),
+                agency: agency,
+                sector: sector.toLowerCase(),
+                zone: zone,
+                beneficiaries: beneficiaries || 0,
+                location_name: locationName || '',
+                created_by: currentUser?.id,
+                created_at: new Date().toISOString()
+            }]);
+            if (!error) {
+                await loadOperations();
+                updateUI();
+                alert('Operation logged successfully!');
+                document.getElementById('opAgency').value = '';
+                document.getElementById('opSector').value = '';
+                document.getElementById('opZone').value = '';
+                document.getElementById('opBeneficiaries').value = '';
+                document.getElementById('opLocation').value = '';
+                updateMapMarkers();
+            } else {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function addDonation(name, email, amount, campaign, message) {
+            if (!name || !email || !amount || amount <= 0) {
+                alert('Please fill all required fields');
+                return;
+            }
+            const { error } = await supabaseClient.from('donations').insert([{
+                donor_name: name,
+                donor_email: email,
+                amount: amount,
+                campaign: campaign,
+                message: message || ''
+            }]);
+            if (!error) {
+                const currentCollected = donationNeeds[campaign]?.collected || 0;
+                await supabaseClient
+                    .from('donation_needs')
+                    .update({ collected: currentCollected + amount })
+                    .eq('campaign', campaign);
+                await loadDonationNeeds();
+                await loadDonations();
+                updateUI();
+                alert(`Thank you ${name}! Your donation of $${amount} has been recorded.`);
+                document.getElementById('donorName').value = '';
+                document.getElementById('donorEmail').value = '';
+                document.getElementById('donationAmount').value = '';
+                document.getElementById('donationMessage').value = '';
+            } else {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // UI Update
+        function updateUI() {
+            const totalDonations = (donationsData || []).reduce((s, d) => s + (d.amount || 0), 0);
+            const totalOps = (operationsData || []).length;
+            const uniqueZones = new Set((operationsData || []).map(o => o.zone)).size;
+            const totalBeneficiaries = (operationsData || []).reduce((s, o) => s + (o.beneficiaries || 0), 0);
+
+            const statsHtml = `
+                <div class="stat-card"><div class="stat-label">Active Agencies</div><div class="stat-number">${new Set((operationsData || []).map(o => o.agency)).size}</div></div>
+                <div class="stat-card"><div class="stat-label">Zones Covered</div><div class="stat-number">${uniqueZones}</div></div>
+                <div class="stat-card"><div class="stat-label">Beneficiaries</div><div class="stat-number">${totalBeneficiaries.toLocaleString()}</div></div>
+                <div class="stat-card"><div class="stat-label">Total Donations</div><div class="stat-number">$${totalDonations.toLocaleString()}</div></div>`;
+
+            const statsGrid = document.getElementById('statsGrid');
+            if (statsGrid) statsGrid.innerHTML = statsHtml;
+
+            const recentOps = document.getElementById('recentOpsList');
+            if (recentOps) {
+                recentOps.innerHTML = (operationsData || []).slice(0, 5).map(o => `<div class="activity-item"><strong>${o.agency}</strong> - ${o.sector} @ ${o.zone}<div style="font-size:0.7rem;">${o.beneficiaries || 0} people</div></div>`).join('');
+            }
+
+            const recentDonations = document.getElementById('recentDonationsList');
+            if (recentDonations) {
+                recentDonations.innerHTML = (donationsData || []).slice(0, 5).map(d => `<div class="activity-item" style="border-left-color:#8B5CF6;"><strong>${d.donor_name}</strong> donated $${(d.amount || 0).toLocaleString()}<div style="font-size:0.7rem;">${d.message || 'Thank you!'}</div></div>`).join('');
+            }
+
+            const allOps = document.getElementById('allOpsList');
+            if (allOps) {
+                allOps.innerHTML = (operationsData || []).map(o => `<div class="activity-item"><strong>${o.agency}</strong> - ${o.sector} in ${o.zone}<div>👥 ${o.beneficiaries || 0}</div></div>`).join('');
+            }
+
+            const donorsList = document.getElementById('donorsList');
+            if (donorsList) {
+                donorsList.innerHTML = (donationsData || []).slice(0, 10).map(d => `<div style="padding:12px; border-bottom:1px solid #E2E8F0;"><strong>${d.donor_name}</strong> $${(d.amount || 0).toLocaleString()}<div style="font-size:0.7rem;">${d.message || ''}</div></div>`).join('');
+            }
+
+            const campaignProgress = document.getElementById('campaignProgressList');
+            if (campaignProgress && Object.keys(donationNeeds).length) {
+                const campaignHtml = Object.entries(donationNeeds).map(([k, v]) => {
+                    const percent = ((v.collected || 0) / (v.required || 1) * 100).toFixed(1);
+                    return `<div class="campaign-item"><h3>${v.icon || '📦'} ${v.name}</h3><div class="progress-bar"><div class="progress-fill" style="width: ${percent}%"></div></div><p>$${(v.collected || 0).toLocaleString()} raised of $${(v.required || 0).toLocaleString()}</p><p>${percent}% funded</p></div>`;
+                }).join('');
+                campaignProgress.innerHTML = campaignHtml;
+            }
+
+            updateMapMarkers();
+        }
+
+        // Map Functions
+        function initMap() {
+            const mapContainer = document.getElementById('fullMap');
+            if (mapContainer && !fullMap) {
+                fullMap = L.map('fullMap').setView([20.5937, 78.9629], 5);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+                    subdomains: 'abcd',
+                    maxZoom: 19,
+                    minZoom: 3
+                }).addTo(fullMap);
+                updateMapMarkers();
+            }
+            if (fullMap) {
+                fullMap.invalidateSize();
+            }
+        }
+
+        function updateMapMarkers() {
+            if (!fullMap) return;
+
+            // Clear existing markers
+            fullMap.eachLayer((layer) => {
+                if (layer instanceof L.Marker) {
+                    fullMap.removeLayer(layer);
+                }
+            });
+
+            // Sample coordinates for major Indian cities if no lat/lng in data
+            const cityCoordinates = {
+                'Mumbai': [19.0760, 72.8777],
+                'Delhi': [28.7041, 77.1025],
+                'Chennai': [13.0827, 80.2707],
+                'Kolkata': [22.5726, 88.3639],
+                'Bangalore': [12.9716, 77.5946],
+                'Hyderabad': [17.3850, 78.4867]
+            };
+
+            operationsData.forEach(op => {
+                let lat = null, lng = null;
+
+                if (op.location_name && cityCoordinates[op.location_name]) {
+                    lat = cityCoordinates[op.location_name][0];
+                    lng = cityCoordinates[op.location_name][1];
+                } else if (op.lat && op.lng) {
+                    lat = op.lat;
+                    lng = op.lng;
+                } else if (op.zone && cityCoordinates[op.zone]) {
+                    lat = cityCoordinates[op.zone][0];
+                    lng = cityCoordinates[op.zone][1];
+                }
+
+                if (lat && lng) {
+                    const markerColor = op.sector === 'food' ? '#2c9c7c' :
+                        op.sector === 'medical' ? '#3498db' :
+                            op.sector === 'shelter' ? '#e67e22' : '#f39c12';
+
+                    const marker = L.marker([lat, lng]).addTo(fullMap);
+                    marker.bindPopup(`
+                        <b>${op.agency}</b><br>
+                        Sector: ${op.sector}<br>
+                        Zone: ${op.zone}<br>
+                        Beneficiaries: ${op.beneficiaries || 0}<br>
+                        Location: ${op.location_name || op.zone}
+                    `);
+                }
+            });
+
+            // If no markers, add a default marker at India center
+            if (operationsData.length === 0) {
+                const defaultMarker = L.marker([20.5937, 78.9629]).addTo(fullMap);
+                defaultMarker.bindPopup('<b>DisasterSync HQ</b><br>No active operations yet.<br>Log your first field activity!');
+            }
+        }
+
+        // AI Agent
+        function sendAIMessage() {
+            const input = document.getElementById('aiUserInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+            const chat = document.getElementById('aiChatMessages');
+            chat.innerHTML += `<div class="ai-message user-msg">${msg}</div>`;
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+
+            setTimeout(() => {
+                const totalDonations = (donationsData || []).reduce((s, d) => s + (d.amount || 0), 0);
+                let response = '';
+                const q = msg.toLowerCase();
+                if (q.includes('donation') || q.includes('fund')) {
+                    response = `💰 Total donations raised: $${totalDonations.toLocaleString()}. Most needed campaign: ${Object.entries(donationNeeds).sort((a, b) => ((a[1].collected || 0) / (a[1].required || 1)) - ((b[1].collected || 0) / (b[1].required || 1)))[0]?.[1]?.name || 'N/A'}.`;
+                } else if (q.includes('operation') || q.includes('field')) {
+                    response = `📊 Active field operations: ${operationsData.length}. ${new Set((operationsData || []).map(o => o.zone)).size} zones currently covered.`;
+                } else {
+                    response = `Current status: ${operationsData.length} active operations, $${totalDonations.toLocaleString()} donations raised, ${new Set((operationsData || []).map(o => o.zone)).size} zones covered.`;
+                }
+                chat.innerHTML += `<div class="ai-message ai-msg">🤖 ${response}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+            }, 300);
+        }
+
+        // Event Listeners
+        document.getElementById('registerBtn').onclick = register;
+        document.getElementById('loginBtn').onclick = login;
+        document.getElementById('logoutBtn').onclick = logout;
+
+        const logBtn = document.getElementById('logOpBtn');
+        if (logBtn) {
+            logBtn.onclick = () => {
+                addOperation(
+                    document.getElementById('opAgency').value,
+                    document.getElementById('opSector').value,
+                    document.getElementById('opZone').value,
+                    parseInt(document.getElementById('opBeneficiaries').value) || 0,
+                    document.getElementById('opLocation').value
+                );
+            };
+        }
+
+        const donateBtn = document.getElementById('submitDonationBtn');
+        if (donateBtn) {
+            donateBtn.onclick = () => {
+                addDonation(
+                    document.getElementById('donorName').value,
+                    document.getElementById('donorEmail').value,
+                    parseInt(document.getElementById('donationAmount').value) || 0,
+                    document.getElementById('donationCampaign').value,
+                    document.getElementById('donationMessage').value
+                );
+            };
+        }
+
+        // Navigation Tabs
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.onclick = () => {
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const isLogin = tab.dataset.auth === 'login';
+                document.getElementById('loginForm').style.display = isLogin ? 'block' : 'none';
+                document.getElementById('registerForm').style.display = isLogin ? 'none' : 'block';
+            };
+        });
+
+        // Dashboard Navigation
+        document.querySelectorAll('.nav-item').forEach(nav => {
+            nav.onclick = () => {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                nav.classList.add('active');
+                document.querySelectorAll('.dashboard-page').forEach(p => p.style.display = 'none');
+                const pageId = nav.dataset.page + 'Page';
+                const page = document.getElementById(pageId);
+                if (page) page.style.display = 'block';
+                if (nav.dataset.page === 'map') {
+                    setTimeout(() => {
+                        initMap();
+                        if (fullMap) fullMap.invalidateSize();
+                    }, 100);
+                }
+            };
+        });
+
+        // Theme Toggle
+        let isDark = false;
+        const themeBtn = document.getElementById('themeToggleBtn');
+        if (themeBtn) {
+            themeBtn.onclick = () => {
+                isDark = !isDark;
+                document.body.classList.toggle('dark-mode', isDark);
+                themeBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+                if (fullMap) setTimeout(() => fullMap.invalidateSize(), 100);
+            };
+        }
+
+        // Sidebar Toggle
+        let sidebarCollapsed = false;
+        const toggleBtn = document.getElementById('toggleSidebarBtn');
+        if (toggleBtn) {
+            toggleBtn.onclick = () => {
+                sidebarCollapsed = !sidebarCollapsed;
+                document.getElementById('sidebar').classList.toggle('collapsed', sidebarCollapsed);
+                document.getElementById('mainContent').classList.toggle('expanded', sidebarCollapsed);
+                toggleBtn.classList.toggle('collapsed', sidebarCollapsed);
+                if (fullMap) setTimeout(() => fullMap.invalidateSize(), 200);
+            };
+        }
+
+        // AI Popup
+        const aiFloat = document.getElementById('aiFloatBtn');
+        const aiPopup = document.getElementById('aiPopup');
+        const closeAi = document.getElementById('closeAiPopup');
+        const sendAi = document.getElementById('sendAiBtn');
+
+        if (aiFloat) aiFloat.onclick = () => aiPopup.classList.toggle('active');
+        if (closeAi) closeAi.onclick = () => aiPopup.classList.remove('active');
+        if (sendAi) sendAi.onclick = sendAIMessage;
+
+        // Auto login check
+        supabaseClient.auth.getSession().then(({ data: { session } }) => {
+            if (session && session.user) {
+                currentUser = session.user;
+                login();
+            }
+        });
+    </script>
+</body>
+
+</html>
