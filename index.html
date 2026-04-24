@@ -12,6 +12,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         * {
             margin: 0;
@@ -764,6 +765,120 @@
         .btn-antigravity:active {
             transform: translateY(-2px) scale(0.98);
         }
+
+        /* Resource Request Styles */
+        .toast-notification {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+            z-index: 3000;
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast-notification.show {
+            bottom: 40px;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-block;
+        }
+
+        .badge-pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: #F59E0B;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-assigned {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 2500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 500px;
+            margin: 20px;
+            transform: translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .unmet-need-item {
+            padding: 16px;
+            border-radius: 16px;
+            background: #F8FAFC;
+            margin-bottom: 12px;
+            border: 1px solid #E2E8F0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        body.dark-mode .unmet-need-item {
+            background: #374151;
+            border-color: #4B5563;
+        }
+        
+        .assign-btn {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        
+        .assign-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
     </style>
 </head>
 
@@ -832,19 +947,33 @@
                     </div>
                     <div class="bento-card">
                         <div class="card-header">
+                            <h3><i data-lucide="alert-circle" style="width: 18px; height: 18px; margin-right: 8px; display: inline-block; vertical-align: middle;"></i> Unmet Needs</h3>
+                        </div>
+                        <div id="unmetNeedsList" style="max-height: 300px; overflow-y: auto;"></div>
+                    </div>
+                </div>
+                <div class="bento-grid">
+                    <div class="bento-card">
+                        <div class="card-header">
                             <h3><i class="fas fa-hand-holding-heart"></i> Recent Donations</h3>
                         </div>
                         <div id="recentDonationsList"></div>
                     </div>
-                </div>
-                <div class="bento-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-chart-line"></i> Campaign Progress</h3>
+                    <div class="bento-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-line"></i> Campaign Progress</h3>
+                        </div>
+                        <div id="campaignProgressList"></div>
                     </div>
-                    <div id="campaignProgressList"></div>
                 </div>
             </div>
             <div id="operationsPage" class="dashboard-page" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <h2 style="font-size: 1.5rem; font-weight: 700;">Field Operations</h2>
+                    <button class="btn-antigravity" id="openRequestModalBtn" style="width: auto; padding: 12px 24px; min-height: 48px; font-size: 0.9rem;">
+                        <i data-lucide="hand-heart"></i> Need Help?
+                    </button>
+                </div>
                 <div class="glass-form-card">
                     <h3>Log New Field Activity</h3>
                     <div class="fluid-grid">
@@ -928,6 +1057,46 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Resource Request Modal -->
+        <div class="modal-overlay" id="requestModal">
+            <div class="glass-form-card modal-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <h3 style="margin: 0;">Request Resources</h3>
+                    <button id="closeRequestModalBtn" style="background: none; border: none; color: inherit; cursor: pointer;">
+                        <i class="fas fa-times" style="font-size: 1.2rem;"></i>
+                    </button>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div class="glass-input-wrapper">
+                        <i data-lucide="package"></i>
+                        <select id="reqResourceType">
+                            <option value="" disabled selected>Select Resource Type</option>
+                            <option value="Food">Food Relief</option>
+                            <option value="Medical">Medical Aid</option>
+                            <option value="Water">Clean Water</option>
+                            <option value="Equipment">Heavy Equipment</option>
+                        </select>
+                    </div>
+                    <div class="glass-input-wrapper">
+                        <i data-lucide="hash"></i>
+                        <input type="text" id="reqQuantity" placeholder="Quantity (e.g., 500 meals, 2 tents)">
+                    </div>
+                    <div class="glass-input-wrapper">
+                        <i data-lucide="map-pin"></i>
+                        <input type="text" id="reqLocation" placeholder="Delivery Location">
+                    </div>
+                    <button id="submitRequestBtn" class="btn-antigravity" style="margin-top: 10px;">
+                        <i class="fas fa-paper-plane"></i> Submit Request
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="toastNotification" class="toast-notification">
+            <i class="fas fa-check-circle"></i> Request Sent Successfully!
+        </div>
+
         <div class="ai-float-circle" id="aiFloatBtn"><i class="fas fa-robot"></i></div>
         <div class="ai-popup" id="aiPopup">
             <div class="ai-popup-header">
@@ -956,6 +1125,7 @@
         let donationNeeds = {};
         let operationsData = [];
         let donationsData = [];
+        let resourceRequestsData = [];
 
         // Auth Functions
         async function register() {
@@ -1077,6 +1247,7 @@
             await loadDonationNeeds();
             await loadOperations();
             await loadDonations();
+            await loadResourceRequests();
             updateUI();
         }
 
@@ -1096,6 +1267,89 @@
         async function loadDonations() {
             const { data } = await supabaseClient.from('donations').select('*').order('created_at', { ascending: false });
             donationsData = data || [];
+        }
+
+        async function loadResourceRequests() {
+            const { data, error } = await supabaseClient.from('resource_requests').select('*').order('created_at', { ascending: false });
+            if (!error) {
+                resourceRequestsData = data || [];
+            }
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toastNotification');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        async function submitResourceRequest() {
+            const type = document.getElementById('reqResourceType').value;
+            const quantity = document.getElementById('reqQuantity').value;
+            const location = document.getElementById('reqLocation').value;
+            
+            if (!type || !quantity || !location) {
+                alert('Please fill all fields for the resource request.');
+                return;
+            }
+
+            const requesterName = currentUser?.user_metadata?.full_name || currentUser?.email || 'Unknown NGO';
+
+            // Insert into Supabase (if table exists)
+            const { error } = await supabaseClient.from('resource_requests').insert([{
+                requester_name: requesterName,
+                resource_type: type,
+                quantity: quantity,
+                location: location,
+                status: 'Pending'
+            }]);
+
+            if (error) {
+                // Local Fallback if table doesn't exist
+                console.warn('Supabase insert failed, using local fallback:', error.message);
+                resourceRequestsData.unshift({
+                    id: Date.now().toString(),
+                    created_at: new Date().toISOString(),
+                    requester_name: requesterName,
+                    resource_type: type,
+                    quantity: quantity,
+                    location: location,
+                    status: 'Pending',
+                    assigned_to: null
+                });
+            } else {
+                await loadResourceRequests();
+            }
+
+            document.getElementById('requestModal').classList.remove('active');
+            document.getElementById('reqResourceType').value = '';
+            document.getElementById('reqQuantity').value = '';
+            document.getElementById('reqLocation').value = '';
+            
+            showToast();
+            updateUI();
+        }
+
+        async function assignResourceRequest(id) {
+            const assignedTo = prompt('Enter NGO name to assign this request to:');
+            if (!assignedTo) return;
+
+            const { error } = await supabaseClient
+                .from('resource_requests')
+                .update({ status: 'Assigned', assigned_to: assignedTo })
+                .eq('id', id);
+
+            if (error) {
+                console.warn('Supabase update failed, using local fallback:', error.message);
+                const req = resourceRequestsData.find(r => r.id === id);
+                if (req) {
+                    req.status = 'Assigned';
+                    req.assigned_to = assignedTo;
+                }
+            } else {
+                await loadResourceRequests();
+            }
+
+            updateUI();
         }
 
         async function addOperation(agency, sector, zone, beneficiaries, locationName) {
@@ -1204,7 +1458,41 @@
                 campaignProgress.innerHTML = campaignHtml;
             }
 
+            const unmetNeedsList = document.getElementById('unmetNeedsList');
+            if (unmetNeedsList) {
+                if (resourceRequestsData.length === 0) {
+                    unmetNeedsList.innerHTML = '<div style="padding: 16px; color: #64748B;">No resource requests found.</div>';
+                } else {
+                    unmetNeedsList.innerHTML = resourceRequestsData.map(req => {
+                        const isPending = req.status === 'Pending';
+                        const badgeClass = isPending ? 'badge-pending' : 'badge-assigned';
+                        
+                        return `
+                            <div class="unmet-need-item">
+                                <div style="flex: 1;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                        <strong>${req.resource_type}</strong>
+                                        <span class="badge ${badgeClass}">${req.status}</span>
+                                    </div>
+                                    <div style="font-size: 0.85rem; color: #64748B;">
+                                        <i class="fas fa-box"></i> ${req.quantity} &nbsp;&bull;&nbsp;
+                                        <i class="fas fa-map-marker-alt"></i> ${req.location} &nbsp;&bull;&nbsp;
+                                        <i class="fas fa-user"></i> ${req.requester_name}
+                                    </div>
+                                    ${req.assigned_to ? `<div style="font-size: 0.8rem; margin-top: 4px; color: #10B981;"><i data-lucide="handshake" style="width: 14px; height: 14px; vertical-align: middle; display: inline-block;"></i> Assigned to: ${req.assigned_to}</div>` : ''}
+                                </div>
+                                ${isPending ? `<button class="assign-btn" onclick="assignResourceRequest('${req.id}')"><i data-lucide="handshake" style="width: 14px; height: 14px;"></i> Assign</button>` : ''}
+                            </div>
+                        `;
+                    }).join('');
+                }
+            }
+
             updateMapMarkers();
+            
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
         }
 
         // Map Functions
@@ -1276,10 +1564,39 @@
             });
 
             // If no markers, add a default marker at India center
-            if (operationsData.length === 0) {
+            if (operationsData.length === 0 && resourceRequestsData.filter(r => r.status === 'Pending').length === 0) {
                 const defaultMarker = L.marker([20.5937, 78.9629]).addTo(fullMap);
                 defaultMarker.bindPopup('<b>DisasterSync HQ</b><br>No active operations yet.<br>Log your first field activity!');
             }
+
+            // Plot pending resource requests
+            resourceRequestsData.filter(r => r.status === 'Pending').forEach(req => {
+                let lat = null, lng = null;
+                if (req.location && cityCoordinates[req.location]) {
+                    lat = cityCoordinates[req.location][0] + (Math.random() * 0.05 - 0.025);
+                    lng = cityCoordinates[req.location][1] + (Math.random() * 0.05 - 0.025);
+                } else {
+                    lat = 20.5937 + (Math.random() * 5 - 2.5);
+                    lng = 78.9629 + (Math.random() * 5 - 2.5);
+                }
+
+                if (lat && lng) {
+                    const alertIcon = L.divIcon({
+                        html: '<div style="background:#F59E0B; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 2px 5px rgba(0,0,0,0.3);"><i class="fas fa-exclamation"></i></div>',
+                        className: '',
+                        iconSize: [24, 24],
+                        iconAnchor: [12, 12]
+                    });
+
+                    const marker = L.marker([lat, lng], { icon: alertIcon }).addTo(fullMap);
+                    marker.bindPopup(`
+                        <b style="color: #F59E0B;">Urgent Need: ${req.resource_type}</b><br>
+                        Quantity: ${req.quantity}<br>
+                        Location: ${req.location}<br>
+                        Requester: ${req.requester_name}
+                    `);
+                }
+            });
         }
 
         // AI Agent
@@ -1338,6 +1655,18 @@
                 );
             };
         }
+
+        const reqBtn = document.getElementById('submitRequestBtn');
+        if (reqBtn) {
+            reqBtn.onclick = submitResourceRequest;
+        }
+
+        const openReqModalBtn = document.getElementById('openRequestModalBtn');
+        const closeReqModalBtn = document.getElementById('closeRequestModalBtn');
+        const requestModal = document.getElementById('requestModal');
+
+        if (openReqModalBtn) openReqModalBtn.onclick = () => requestModal.classList.add('active');
+        if (closeReqModalBtn) closeReqModalBtn.onclick = () => requestModal.classList.remove('active');
 
         // Navigation Tabs
         document.querySelectorAll('.auth-tab').forEach(tab => {
@@ -1408,6 +1737,13 @@
             if (session && session.user) {
                 currentUser = session.user;
                 login();
+            }
+        });
+        
+        // Initialize Lucide icons on load
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
             }
         });
     </script>
