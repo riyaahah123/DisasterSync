@@ -909,8 +909,8 @@
                 <div class="input-group"><label>Password</label><input type="password" id="regPassword"
                         placeholder="Create a password"></div>
                 <div class="input-group"><label>Role</label><select id="regRole">
-                        <option value="ngo">NGO Representative</option>
-                        <option value="gov">Government Official</option>
+                        <option value="ops">Operations Admin</option>
+                        <option value="donations">Donations Manager</option>
                     </select></div>
                 <div id="registerError" class="error-msg"></div>
                 <button class="auth-btn" id="registerBtn">Register →</button>
@@ -971,43 +971,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
                     <h2 style="font-size: 1.5rem; font-weight: 700;">Field Operations</h2>
                 </div>
-                
-                <div class="glass-form-card" id="reportNeedFormContainer">
-                    <h3>Report Unmet Need</h3>
-                    <div class="fluid-grid">
-                        <div class="glass-input-wrapper">
-                            <i data-lucide="package"></i>
-                            <select id="reqResourceType">
-                                <option value="" disabled selected>Select Category</option>
-                                <option value="Food">Food Relief</option>
-                                <option value="Medical">Medical Aid</option>
-                                <option value="Water">Clean Water</option>
-                            </select>
-                        </div>
-                        <div class="glass-input-wrapper">
-                            <i data-lucide="hash"></i>
-                            <input type="text" id="reqQuantity" placeholder="Quantity (e.g., 500 meals)">
-                        </div>
-                        <div class="glass-input-wrapper">
-                            <i data-lucide="map-pin"></i>
-                            <input type="text" id="reqLocation" placeholder="Location">
-                        </div>
-                        <div class="glass-input-wrapper">
-                            <i data-lucide="alert-triangle"></i>
-                            <select id="reqUrgency">
-                                <option value="" disabled selected>Urgency Level</option>
-                                <option value="Low">Low</option>
-                                <option value="Medium">Medium</option>
-                                <option value="High">High</option>
-                            </select>
-                        </div>
-                        <div style="display: flex; align-items: stretch;">
-                            <button id="submitRequestBtn" class="btn-antigravity">
-                                <i class="fas fa-paper-plane"></i> Submit Request
-                            </button>
-                        </div>
-                    </div>
-                </div>
+
 
                 <div class="glass-form-card">
                     <h3>Log New Field Activity</h3>
@@ -1127,7 +1091,7 @@
         let donationNeeds = {};
         let operationsData = [];
         let donationsData = [];
-        let resourceRequestsData = [];
+        let unmetNeedsData = [];
 
         // Auth Functions
         async function register() {
@@ -1199,7 +1163,7 @@
 
                 // Safe fallback to metadata if profile table insert failed due to RLS
                 const userMeta = currentUser.user_metadata || {};
-                currentRole = profile?.role || userMeta.role || 'ngo';
+                currentRole = profile?.role || userMeta.role || 'ops';
                 const displayName = profile?.full_name || userMeta.full_name || currentUser.email;
 
                 document.getElementById('authContainer').style.display = 'none';
@@ -1208,18 +1172,18 @@
                     <i class="fas fa-user-circle" style="font-size: 1.5rem; margin-bottom: 8px; color: #8B5CF6;"></i>
                     <div style="font-weight: 600;">${displayName}</div>
                     <div style="font-size: 0.8rem; color: #64748B; margin-top: 4px;">
-                        ${currentRole === 'ngo' ? '<i class="fas fa-hand-holding-heart"></i> NGO Representative' : '<i class="fas fa-shield-alt"></i> Government Official'}
+                        ${currentRole === 'ops' || currentRole === 'operations' ? '<i class="fas fa-hard-hat"></i> Operations Admin' : '<i class="fas fa-hand-holding-usd"></i> Donations Manager'}
                     </div>
                 `;
 
                 // Role Based UI Access
-                if (currentRole === 'ngo') {
+                if (currentRole === 'ops' || currentRole === 'operations') {
                     document.querySelector('[data-page="donations"]').style.display = 'none';
                     document.querySelector('[data-page="operations"]').style.display = '';
                     document.querySelector('[data-page="map"]').style.display = '';
-                } else if (currentRole === 'gov') {
+                } else if (currentRole === 'donations') {
                     document.querySelector('[data-page="operations"]').style.display = 'none';
-                    document.querySelector('[data-page="map"]').style.display = '';
+                    document.querySelector('[data-page="map"]').style.display = 'none';
                     document.querySelector('[data-page="donations"]').style.display = '';
                 }
 
@@ -1271,89 +1235,85 @@
             donationsData = data || [];
         }
 
-        async function loadResourceRequests() {
-            const { data, error } = await supabaseClient.from('resource_requests').select('*').order('created_at', { ascending: false });
+        async function loadUnmetNeeds() {
+            const { data, error } = await supabaseClient.from('unmet_needs').select('*').neq('status', 'Completed').order('created_at', { ascending: false });
             if (!error) {
-                resourceRequestsData = data || [];
+                unmetNeedsData = data || [];
             }
         }
 
-        function showToast() {
+        function showToast(message) {
             const toast = document.getElementById('toastNotification');
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message || 'Success!'}`;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        async function submitResourceRequest() {
-            const type = document.getElementById('reqResourceType').value;
-            const quantity = document.getElementById('reqQuantity').value;
-            const location = document.getElementById('reqLocation').value;
-            const urgency = document.getElementById('reqUrgency').value;
+        async function submitUnmetNeed() {
+            const category = document.getElementById('unmetCategory').value;
+            const description = document.getElementById('unmetDescription').value;
+            const location = document.getElementById('unmetLocation').value;
+            const urgency = document.getElementById('unmetUrgency').value;
             
-            if (!type || !quantity || !location || !urgency) {
-                alert('Please fill all fields for the resource request.');
+            if (!category || !description || !location || !urgency) {
+                alert('Please fill all fields for the unmet need.');
                 return;
             }
 
-            const requesterName = currentUser?.user_metadata?.full_name || currentUser?.email || 'Unknown NGO';
+            const requesterName = currentUser?.user_metadata?.full_name || currentUser?.email || 'Unknown User';
 
-            // Insert into Supabase (if table exists)
-            const { error } = await supabaseClient.from('resource_requests').insert([{
-                requester_name: requesterName,
-                resource_type: type,
-                quantity: quantity,
+            const { error } = await supabaseClient.from('unmet_needs').insert([{
+                category: category,
+                description: description,
                 location: location,
                 urgency: urgency,
-                status: 'Pending'
+                status: 'Pending',
+                requester_name: requesterName
             }]);
 
             if (error) {
-                // Local Fallback if table doesn't exist
                 console.warn('Supabase insert failed, using local fallback:', error.message);
-                resourceRequestsData.unshift({
+                unmetNeedsData.unshift({
                     id: Date.now().toString(),
                     created_at: new Date().toISOString(),
-                    requester_name: requesterName,
-                    resource_type: type,
-                    quantity: quantity,
+                    category: category,
+                    description: description,
                     location: location,
                     urgency: urgency,
                     status: 'Pending',
-                    assigned_to: null
+                    requester_name: requesterName
                 });
             } else {
-                await loadResourceRequests();
+                await loadUnmetNeeds();
             }
 
-            document.getElementById('reqResourceType').value = '';
-            document.getElementById('reqQuantity').value = '';
-            document.getElementById('reqLocation').value = '';
-            document.getElementById('reqUrgency').value = '';
+            document.getElementById('unmetCategory').value = '';
+            document.getElementById('unmetDescription').value = '';
+            document.getElementById('unmetLocation').value = '';
+            document.getElementById('unmetUrgency').value = '';
             
-            showToast();
+            showToast('Unmet need reported successfully!');
             updateUI();
         }
 
-        async function assignResourceRequest(id) {
-            const assignedTo = prompt('Enter NGO name to assign this request to:');
-            if (!assignedTo) return;
-
+        async function completeUnmetNeed(id) {
             const { error } = await supabaseClient
-                .from('resource_requests')
-                .update({ status: 'Assigned', assigned_to: assignedTo })
+                .from('unmet_needs')
+                .update({ status: 'Completed' })
                 .eq('id', id);
 
             if (error) {
                 console.warn('Supabase update failed, using local fallback:', error.message);
-                const req = resourceRequestsData.find(r => r.id === id);
+                const req = unmetNeedsData.find(r => r.id === id);
                 if (req) {
-                    req.status = 'Assigned';
-                    req.assigned_to = assignedTo;
+                    req.status = 'Completed';
+                    unmetNeedsData = unmetNeedsData.filter(r => r.id !== id);
                 }
             } else {
-                await loadResourceRequests();
+                await loadUnmetNeeds();
             }
 
+            showToast('Need marked as completed!');
             updateUI();
         }
 
@@ -1465,30 +1425,28 @@
 
             const unmetNeedsList = document.getElementById('unmetNeedsList');
             if (unmetNeedsList) {
-                if (resourceRequestsData.length === 0) {
-                    unmetNeedsList.innerHTML = '<div style="padding: 16px; color: #64748B;">No resource requests found.</div>';
+                if (unmetNeedsData.length === 0) {
+                    unmetNeedsList.innerHTML = '<div style="padding: 16px; color: #64748B;">No active unmet needs found.</div>';
                 } else {
-                    unmetNeedsList.innerHTML = resourceRequestsData.map(req => {
-                        const isPending = req.status === 'Pending';
-                        const badgeClass = isPending ? 'badge-pending' : 'badge-assigned';
+                    unmetNeedsList.innerHTML = unmetNeedsData.map(req => {
+                        const badgeClass = req.status === 'Pending' ? 'badge-pending' : 'badge-assigned';
                         const urgencyColor = req.urgency === 'High' ? '#EF4444' : req.urgency === 'Medium' ? '#F59E0B' : '#10B981';
                         
                         return `
                             <div class="unmet-need-item" style="border-left: 4px solid ${urgencyColor}">
                                 <div style="flex: 1;">
                                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                                        <strong>${req.resource_type}</strong>
+                                        <strong>${req.category}</strong>
                                         <span class="badge ${badgeClass}">${req.status}</span>
                                         ${req.urgency ? `<span class="badge" style="background: ${urgencyColor}20; color: ${urgencyColor}; border: 1px solid ${urgencyColor}40;">${req.urgency} Urgency</span>` : ''}
                                     </div>
                                     <div style="font-size: 0.85rem; color: #64748B;">
-                                        <i class="fas fa-box"></i> ${req.quantity} &nbsp;&bull;&nbsp;
+                                        <i class="fas fa-file-alt"></i> ${req.description} &nbsp;&bull;&nbsp;
                                         <i class="fas fa-map-marker-alt"></i> ${req.location} &nbsp;&bull;&nbsp;
-                                        <i class="fas fa-user"></i> ${req.requester_name}
+                                        <i class="fas fa-user"></i> ${req.requester_name || 'Anonymous'}
                                     </div>
-                                    ${req.assigned_to ? `<div style="font-size: 0.8rem; margin-top: 4px; color: #10B981;"><i data-lucide="handshake" style="width: 14px; height: 14px; vertical-align: middle; display: inline-block;"></i> Assigned to: ${req.assigned_to}</div>` : ''}
                                 </div>
-                                ${isPending && currentRole === 'gov' ? `<button class="assign-btn" onclick="assignResourceRequest('${req.id}')"><i data-lucide="handshake" style="width: 14px; height: 14px;"></i> Assign</button>` : ''}
+                                ${currentRole === 'ops' ? `<button class="assign-btn" style="background: linear-gradient(135deg, #10B981, #059669);" onclick="completeUnmetNeed('${req.id}')"><i class="fas fa-check"></i> Mark as Completed</button>` : ''}
                             </div>
                         `;
                     }).join('');
@@ -1571,13 +1529,13 @@
             });
 
             // If no markers, add a default marker at India center
-            if (operationsData.length === 0 && resourceRequestsData.filter(r => r.status === 'Pending').length === 0) {
+            if (operationsData.length === 0 && unmetNeedsData.length === 0) {
                 const defaultMarker = L.marker([20.5937, 78.9629]).addTo(fullMap);
                 defaultMarker.bindPopup('<b>DisasterSync HQ</b><br>No active operations yet.<br>Log your first field activity!');
             }
 
-            // Plot pending resource requests
-            resourceRequestsData.filter(r => r.status === 'Pending').forEach(req => {
+            // Plot pending unmet needs
+            unmetNeedsData.forEach(req => {
                 let lat = null, lng = null;
                 if (req.location && cityCoordinates[req.location]) {
                     lat = cityCoordinates[req.location][0] + (Math.random() * 0.05 - 0.025);
@@ -1597,10 +1555,10 @@
 
                     const marker = L.marker([lat, lng], { icon: alertIcon }).addTo(fullMap);
                     marker.bindPopup(`
-                        <b style="color: #F59E0B;">Urgent Need: ${req.resource_type}</b><br>
-                        Quantity: ${req.quantity}<br>
+                        <b style="color: #F59E0B;">Urgent Need: ${req.category}</b><br>
+                        Description: ${req.description}<br>
                         Location: ${req.location}<br>
-                        Requester: ${req.requester_name}
+                        Requester: ${req.requester_name || 'Anonymous'}
                     `);
                 }
             });
@@ -1663,9 +1621,9 @@
             };
         }
 
-        const reqBtn = document.getElementById('submitRequestBtn');
+        const reqBtn = document.getElementById('submitUnmetNeedBtn');
         if (reqBtn) {
-            reqBtn.onclick = submitResourceRequest;
+            reqBtn.onclick = submitUnmetNeed;
         }
 
 
