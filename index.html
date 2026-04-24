@@ -971,7 +971,44 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
                     <h2 style="font-size: 1.5rem; font-weight: 700;">Field Operations</h2>
                 </div>
-
+                
+                <div class="glass-form-card" id="reportUnmetNeedContainer">
+                    <h3>Report Unmet Need</h3>
+                    <div class="fluid-grid">
+                        <div class="glass-input-wrapper">
+                            <i data-lucide="package"></i>
+                            <select id="unmetCategory">
+                                <option value="" disabled selected>Select Category</option>
+                                <option value="Food">Food Relief</option>
+                                <option value="Medical">Medical Aid</option>
+                                <option value="Water">Clean Water</option>
+                                <option value="Shelter">Shelter</option>
+                            </select>
+                        </div>
+                        <div class="glass-input-wrapper">
+                            <i data-lucide="file-text"></i>
+                            <input type="text" id="unmetDescription" placeholder="Description (e.g., 500 meals)">
+                        </div>
+                        <div class="glass-input-wrapper">
+                            <i data-lucide="map-pin"></i>
+                            <input type="text" id="unmetLocation" placeholder="Location">
+                        </div>
+                        <div class="glass-input-wrapper">
+                            <i data-lucide="alert-triangle"></i>
+                            <select id="unmetUrgency">
+                                <option value="" disabled selected>Urgency Level</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; align-items: stretch;">
+                            <button id="submitUnmetNeedBtn" class="btn-antigravity">
+                                <i class="fas fa-paper-plane"></i> Report Need
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="glass-form-card">
                     <h3>Log New Field Activity</h3>
