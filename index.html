@@ -909,8 +909,8 @@
                 <div class="input-group"><label>Password</label><input type="password" id="regPassword"
                         placeholder="Create a password"></div>
                 <div class="input-group"><label>Role</label><select id="regRole">
-                        <option value="operations">Operations Admin</option>
-                        <option value="donations">Donations Manager</option>
+                        <option value="ngo">NGO Representative</option>
+                        <option value="gov">Government Official</option>
                     </select></div>
                 <div id="registerError" class="error-msg"></div>
                 <button class="auth-btn" id="registerBtn">Register →</button>
@@ -970,10 +970,45 @@
             <div id="operationsPage" class="dashboard-page" style="display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
                     <h2 style="font-size: 1.5rem; font-weight: 700;">Field Operations</h2>
-                    <button class="btn-antigravity" id="openRequestModalBtn" style="width: auto; padding: 12px 24px; min-height: 48px; font-size: 0.9rem;">
-                        <i data-lucide="hand-heart"></i> Need Help?
-                    </button>
                 </div>
+                
+                <div class="glass-form-card" id="reportNeedFormContainer">
+                    <h3>Report Unmet Need</h3>
+                    <div class="fluid-grid">
+                        <div class="glass-input-wrapper">
+                            <i data-lucide="package"></i>
+                            <select id="reqResourceType">
+                                <option value="" disabled selected>Select Category</option>
+                                <option value="Food">Food Relief</option>
+                                <option value="Medical">Medical Aid</option>
+                                <option value="Water">Clean Water</option>
+                            </select>
+                        </div>
+                        <div class="glass-input-wrapper">
+                            <i data-lucide="hash"></i>
+                            <input type="text" id="reqQuantity" placeholder="Quantity (e.g., 500 meals)">
+                        </div>
+                        <div class="glass-input-wrapper">
+                            <i data-lucide="map-pin"></i>
+                            <input type="text" id="reqLocation" placeholder="Location">
+                        </div>
+                        <div class="glass-input-wrapper">
+                            <i data-lucide="alert-triangle"></i>
+                            <select id="reqUrgency">
+                                <option value="" disabled selected>Urgency Level</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; align-items: stretch;">
+                            <button id="submitRequestBtn" class="btn-antigravity">
+                                <i class="fas fa-paper-plane"></i> Submit Request
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="glass-form-card">
                     <h3>Log New Field Activity</h3>
                     <div class="fluid-grid">
@@ -1058,40 +1093,7 @@
             </div>
         </div>
         
-        <!-- Resource Request Modal -->
-        <div class="modal-overlay" id="requestModal">
-            <div class="glass-form-card modal-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                    <h3 style="margin: 0;">Request Resources</h3>
-                    <button id="closeRequestModalBtn" style="background: none; border: none; color: inherit; cursor: pointer;">
-                        <i class="fas fa-times" style="font-size: 1.2rem;"></i>
-                    </button>
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 20px;">
-                    <div class="glass-input-wrapper">
-                        <i data-lucide="package"></i>
-                        <select id="reqResourceType">
-                            <option value="" disabled selected>Select Resource Type</option>
-                            <option value="Food">Food Relief</option>
-                            <option value="Medical">Medical Aid</option>
-                            <option value="Water">Clean Water</option>
-                            <option value="Equipment">Heavy Equipment</option>
-                        </select>
-                    </div>
-                    <div class="glass-input-wrapper">
-                        <i data-lucide="hash"></i>
-                        <input type="text" id="reqQuantity" placeholder="Quantity (e.g., 500 meals, 2 tents)">
-                    </div>
-                    <div class="glass-input-wrapper">
-                        <i data-lucide="map-pin"></i>
-                        <input type="text" id="reqLocation" placeholder="Delivery Location">
-                    </div>
-                    <button id="submitRequestBtn" class="btn-antigravity" style="margin-top: 10px;">
-                        <i class="fas fa-paper-plane"></i> Submit Request
-                    </button>
-                </div>
-            </div>
-        </div>
+
 
         <div id="toastNotification" class="toast-notification">
             <i class="fas fa-check-circle"></i> Request Sent Successfully!
@@ -1197,7 +1199,7 @@
 
                 // Safe fallback to metadata if profile table insert failed due to RLS
                 const userMeta = currentUser.user_metadata || {};
-                currentRole = profile?.role || userMeta.role || 'operations';
+                currentRole = profile?.role || userMeta.role || 'ngo';
                 const displayName = profile?.full_name || userMeta.full_name || currentUser.email;
 
                 document.getElementById('authContainer').style.display = 'none';
@@ -1206,18 +1208,18 @@
                     <i class="fas fa-user-circle" style="font-size: 1.5rem; margin-bottom: 8px; color: #8B5CF6;"></i>
                     <div style="font-weight: 600;">${displayName}</div>
                     <div style="font-size: 0.8rem; color: #64748B; margin-top: 4px;">
-                        ${currentRole === 'operations' ? '<i class="fas fa-hard-hat"></i> Operations Admin' : '<i class="fas fa-hand-holding-usd"></i> Donations Manager'}
+                        ${currentRole === 'ngo' ? '<i class="fas fa-hand-holding-heart"></i> NGO Representative' : '<i class="fas fa-shield-alt"></i> Government Official'}
                     </div>
                 `;
 
                 // Role Based UI Access
-                if (currentRole === 'operations') {
+                if (currentRole === 'ngo') {
                     document.querySelector('[data-page="donations"]').style.display = 'none';
                     document.querySelector('[data-page="operations"]').style.display = '';
                     document.querySelector('[data-page="map"]').style.display = '';
-                } else if (currentRole === 'donations') {
+                } else if (currentRole === 'gov') {
                     document.querySelector('[data-page="operations"]').style.display = 'none';
-                    document.querySelector('[data-page="map"]').style.display = 'none';
+                    document.querySelector('[data-page="map"]').style.display = '';
                     document.querySelector('[data-page="donations"]').style.display = '';
                 }
 
@@ -1286,8 +1288,9 @@
             const type = document.getElementById('reqResourceType').value;
             const quantity = document.getElementById('reqQuantity').value;
             const location = document.getElementById('reqLocation').value;
+            const urgency = document.getElementById('reqUrgency').value;
             
-            if (!type || !quantity || !location) {
+            if (!type || !quantity || !location || !urgency) {
                 alert('Please fill all fields for the resource request.');
                 return;
             }
@@ -1300,6 +1303,7 @@
                 resource_type: type,
                 quantity: quantity,
                 location: location,
+                urgency: urgency,
                 status: 'Pending'
             }]);
 
@@ -1313,6 +1317,7 @@
                     resource_type: type,
                     quantity: quantity,
                     location: location,
+                    urgency: urgency,
                     status: 'Pending',
                     assigned_to: null
                 });
@@ -1320,10 +1325,10 @@
                 await loadResourceRequests();
             }
 
-            document.getElementById('requestModal').classList.remove('active');
             document.getElementById('reqResourceType').value = '';
             document.getElementById('reqQuantity').value = '';
             document.getElementById('reqLocation').value = '';
+            document.getElementById('reqUrgency').value = '';
             
             showToast();
             updateUI();
@@ -1466,13 +1471,15 @@
                     unmetNeedsList.innerHTML = resourceRequestsData.map(req => {
                         const isPending = req.status === 'Pending';
                         const badgeClass = isPending ? 'badge-pending' : 'badge-assigned';
+                        const urgencyColor = req.urgency === 'High' ? '#EF4444' : req.urgency === 'Medium' ? '#F59E0B' : '#10B981';
                         
                         return `
-                            <div class="unmet-need-item">
+                            <div class="unmet-need-item" style="border-left: 4px solid ${urgencyColor}">
                                 <div style="flex: 1;">
                                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
                                         <strong>${req.resource_type}</strong>
                                         <span class="badge ${badgeClass}">${req.status}</span>
+                                        ${req.urgency ? `<span class="badge" style="background: ${urgencyColor}20; color: ${urgencyColor}; border: 1px solid ${urgencyColor}40;">${req.urgency} Urgency</span>` : ''}
                                     </div>
                                     <div style="font-size: 0.85rem; color: #64748B;">
                                         <i class="fas fa-box"></i> ${req.quantity} &nbsp;&bull;&nbsp;
@@ -1481,7 +1488,7 @@
                                     </div>
                                     ${req.assigned_to ? `<div style="font-size: 0.8rem; margin-top: 4px; color: #10B981;"><i data-lucide="handshake" style="width: 14px; height: 14px; vertical-align: middle; display: inline-block;"></i> Assigned to: ${req.assigned_to}</div>` : ''}
                                 </div>
-                                ${isPending ? `<button class="assign-btn" onclick="assignResourceRequest('${req.id}')"><i data-lucide="handshake" style="width: 14px; height: 14px;"></i> Assign</button>` : ''}
+                                ${isPending && currentRole === 'gov' ? `<button class="assign-btn" onclick="assignResourceRequest('${req.id}')"><i data-lucide="handshake" style="width: 14px; height: 14px;"></i> Assign</button>` : ''}
                             </div>
                         `;
                     }).join('');
@@ -1661,12 +1668,7 @@
             reqBtn.onclick = submitResourceRequest;
         }
 
-        const openReqModalBtn = document.getElementById('openRequestModalBtn');
-        const closeReqModalBtn = document.getElementById('closeRequestModalBtn');
-        const requestModal = document.getElementById('requestModal');
 
-        if (openReqModalBtn) openReqModalBtn.onclick = () => requestModal.classList.add('active');
-        if (closeReqModalBtn) closeReqModalBtn.onclick = () => requestModal.classList.remove('active');
 
         // Navigation Tabs
         document.querySelectorAll('.auth-tab').forEach(tab => {
