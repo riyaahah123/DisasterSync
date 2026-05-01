@@ -1905,6 +1905,17 @@
         async function updateUI() {
             const t = translations[currentLang] || translations.en;
             const totalDonations = (donationsData || []).reduce((s, d) => s + (d.amount || 0), 0);
+
+            // Sync donationNeeds collected amounts with actual donationsData
+            const collectedByCampaign = {};
+            (donationsData || []).forEach(d => {
+                const c = (d.campaign || 'other').toLowerCase();
+                collectedByCampaign[c] = (collectedByCampaign[c] || 0) + (d.amount || 0);
+            });
+            for (const [k, v] of Object.entries(donationNeeds)) {
+                v.collected = collectedByCampaign[k.toLowerCase()] || 0;
+            }
+
             const totalOps = (operationsData || []).length;
             const uniqueZones = new Set((operationsData || []).map(o => o.zone)).size;
             const totalBeneficiaries = (operationsData || []).reduce((s, o) => s + (o.beneficiaries || 0), 0);
@@ -2204,11 +2215,19 @@
             // Donations Chart
             const labels = [];
             const dataVals = [];
-            const bgColors = ['#8B5CF6', '#10B981', '#F59E0B', '#3B82F6', '#EF4444'];
+            let bgColors = ['#8B5CF6', '#10B981', '#F59E0B', '#3B82F6', '#EF4444'];
             
-            for (const [k, v] of Object.entries(donationNeeds)) {
-                labels.push(t['cat_' + k.toLowerCase()] || v.name);
-                dataVals.push(v.collected || 0);
+            const totalDonationsChart = (donationsData || []).reduce((s, d) => s + (d.amount || 0), 0);
+
+            if (totalDonationsChart === 0) {
+                labels.push('No Donations');
+                dataVals.push(1);
+                bgColors = [isDark ? '#374151' : '#E2E8F0'];
+            } else {
+                for (const [k, v] of Object.entries(donationNeeds)) {
+                    labels.push(t['cat_' + k.toLowerCase()] || v.name);
+                    dataVals.push(v.collected || 0);
+                }
             }
 
             const ctxDon = document.getElementById('donationsChart').getContext('2d');
