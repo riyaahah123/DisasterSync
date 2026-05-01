@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>DisasterSync | Intelligent Disaster Coordination Platform</title>
+    <title>DisasterSync</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -580,8 +580,15 @@
 
         /* Antigravity Glassmorphic Form - Command Center */
         @keyframes breatheIcon {
-            0%, 100% { transform: translateY(-50%) scale(1); }
-            50% { transform: translateY(-50%) scale(1.15); }
+
+            0%,
+            100% {
+                transform: translateY(-50%) scale(1);
+            }
+
+            50% {
+                transform: translateY(-50%) scale(1.15);
+            }
         }
 
         .glass-form-card {
@@ -601,7 +608,7 @@
         body.dark-mode .glass-form-card {
             background: rgba(15, 23, 42, 0.4);
             border: 1px solid rgba(139, 92, 246, 0.2);
-            box-shadow: 0 0 25px rgba(139, 92, 246, 0.15), 0 0 50px rgba(236, 72, 153, 0.05), inset 0 0 0 1px rgba(255,255,255,0.05);
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.15), 0 0 50px rgba(236, 72, 153, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
         }
 
         body.dark-mode .glass-form-card::before {
@@ -627,7 +634,7 @@
 
         body.dark-mode .glass-form-card h3 {
             color: #E2E8F0;
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
 
         .fluid-grid {
@@ -653,7 +660,7 @@
             transition: all 0.3s ease;
             transform: translateY(-50%);
         }
-        
+
         body.dark-mode .glass-input-wrapper i {
             background: linear-gradient(135deg, #9CA3AF, #6B7280);
             -webkit-background-clip: text;
@@ -675,7 +682,7 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
             font-family: inherit;
         }
-        
+
         .glass-input-wrapper textarea {
             resize: vertical;
         }
@@ -746,8 +753,11 @@
         .btn-antigravity::after {
             content: "";
             position: absolute;
-            top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             transform: skewX(-25deg);
             transition: 0.6s ease-in-out;
         }
@@ -815,7 +825,10 @@
 
         .modal-overlay {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
@@ -843,7 +856,7 @@
         .modal-overlay.active .modal-content {
             transform: translateY(0);
         }
-        
+
         .unmet-need-item {
             padding: 16px;
             border-radius: 16px;
@@ -854,12 +867,12 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         body.dark-mode .unmet-need-item {
             background: #374151;
             border-color: #4B5563;
         }
-        
+
         .assign-btn {
             background: linear-gradient(135deg, #10B981, #059669);
             color: white;
@@ -874,7 +887,7 @@
             gap: 6px;
             transition: all 0.2s;
         }
-        
+
         .assign-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
@@ -887,33 +900,33 @@
     <div id="authContainer" class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
-                <h1><i class="fas fa-satellite-dish"></i> DisasterSync</h1>
+                <h1><i class="fas fa-satellite-dish"></i> <span data-i18n="app_title">DisasterSync</span></h1>
             </div>
             <div class="auth-tabs">
-                <button class="auth-tab active" data-auth="login">Login</button>
-                <button class="auth-tab" data-auth="register">Register</button>
+                <button class="auth-tab active" data-auth="login" data-i18n="login_tab">Login</button>
+                <button class="auth-tab" data-auth="register" data-i18n="register_tab">Register</button>
             </div>
             <div id="loginForm">
-                <div class="input-group"><label>Email</label><input type="email" id="loginEmail"
-                        placeholder="Enter your email"></div>
-                <div class="input-group"><label>Password</label><input type="password" id="loginPassword"
-                        placeholder="Enter your password"></div>
+                <div class="input-group"><label data-i18n="email_label">Email</label><input type="email" id="loginEmail"
+                        placeholder="Enter your email" data-i18n="email_placeholder"></div>
+                <div class="input-group"><label data-i18n="password_label">Password</label><input type="password" id="loginPassword"
+                        placeholder="Enter your password" data-i18n="password_placeholder"></div>
                 <div id="loginError" class="error-msg"></div>
-                <button class="auth-btn" id="loginBtn">Login →</button>
+                <button class="auth-btn" id="loginBtn" data-i18n="login_btn">Login →</button>
             </div>
             <div id="registerForm" style="display: none;">
-                <div class="input-group"><label>Full Name</label><input type="text" id="regName"
-                        placeholder="Your full name"></div>
-                <div class="input-group"><label>Email</label><input type="email" id="regEmail"
-                        placeholder="Enter your email"></div>
-                <div class="input-group"><label>Password</label><input type="password" id="regPassword"
-                        placeholder="Create a password"></div>
-                <div class="input-group"><label>Role</label><select id="regRole">
-                        <option value="ops">Operations Admin</option>
-                        <option value="donations">Donations Manager</option>
+                <div class="input-group"><label data-i18n="full_name_label">Full Name</label><input type="text" id="regName"
+                        placeholder="Your full name" data-i18n="full_name_placeholder"></div>
+                <div class="input-group"><label data-i18n="email_label">Email</label><input type="email" id="regEmail"
+                        placeholder="Enter your email" data-i18n="email_placeholder"></div>
+                <div class="input-group"><label data-i18n="password_label">Password</label><input type="password" id="regPassword"
+                        placeholder="Create a password" data-i18n="reg_password_placeholder"></div>
+                <div class="input-group"><label data-i18n="role_label">Role</label><select id="regRole">
+                        <option value="ops" data-i18n="role_ops">Operations Admin</option>
+                        <option value="donations" data-i18n="role_donations">Donations Manager</option>
                     </select></div>
                 <div id="registerError" class="error-msg"></div>
-                <button class="auth-btn" id="registerBtn">Register →</button>
+                <button class="auth-btn" id="registerBtn" data-i18n="register_btn">Register →</button>
             </div>
         </div>
     </div>
@@ -922,32 +935,72 @@
     <div id="dashboardContainer" class="dashboard-container">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2><i class="fas fa-satellite-dish"></i> DisasterSync</h2>
+                <h2><i class="fas fa-satellite-dish"></i> <span data-i18n="app_title">DisasterSync</span></h2>
             </div>
             <div class="user-info" id="userInfoDisplay"></div>
             <div class="sidebar-nav">
-                <div class="nav-item active" data-page="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</div>
-                <div class="nav-item" data-page="operations"><i class="fas fa-clipboard-list"></i> Field Ops</div>
-                <div class="nav-item" data-page="map"><i class="fas fa-map-marked-alt"></i> Response Map</div>
-                <div class="nav-item" data-page="donations"><i class="fas fa-hand-holding-heart"></i> Donations</div>
+                <div class="nav-item active" data-page="dashboard"><i class="fas fa-tachometer-alt"></i> <span data-i18n="nav_dashboard">Dashboard</span></div>
+                <div class="nav-item" data-page="operations"><i class="fas fa-clipboard-list"></i> <span data-i18n="nav_field_ops">Field Ops</span></div>
+                <div class="nav-item" data-page="map"><i class="fas fa-map-marked-alt"></i> <span data-i18n="nav_map">Response Map</span></div>
+                <div class="nav-item" data-page="donations"><i class="fas fa-hand-holding-heart"></i> <span data-i18n="nav_donations">Donations</span></div>
             </div>
-            <div class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</div>
+            <div class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span data-i18n="nav_logout">Logout</span></div>
         </div>
         <button class="toggle-sidebar" id="toggleSidebarBtn"><i class="fas fa-bars"></i></button>
-        <button class="theme-toggle" id="themeToggleBtn"><i class="fas fa-moon"></i></button>
+        
+        <div class="top-nav-right" style="position: absolute; top: 24px; right: 24px; display: flex; gap: 12px; align-items: center; z-index: 100;">
+            <div class="notification-bell" id="notificationBell" style="position: relative; cursor: pointer; padding: 8px; border-radius: 50%; background: rgba(255,255,255,0.1); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);" onclick="document.getElementById('notificationDropdown').style.display = document.getElementById('notificationDropdown').style.display === 'none' ? 'flex' : 'none';">
+                <i class="fas fa-bell"></i>
+                <span id="notificationBadge" style="display: none; position: absolute; top: -4px; right: -4px; background: #EF4444; color: white; border-radius: 50%; font-size: 0.6rem; width: 18px; height: 18px; align-items: center; justify-content: center; font-weight: bold;">0</span>
+                <div id="notificationDropdown" style="display: none; position: absolute; top: 50px; right: 0; width: 320px; background: rgba(30,41,59,0.95); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; backdrop-filter: blur(20px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000; flex-direction: column; text-align: left;">
+                    <div style="padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 600; display: flex; justify-content: space-between; align-items: center; color: white;">
+                        <span><i class="fas fa-exclamation-triangle" style="color: #EF4444;"></i> <span data-i18n="urgent_need">Urgent Needs</span></span>
+                        <span id="notificationCountLabel" style="font-size: 0.75rem; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 10px;">0</span>
+                    </div>
+                    <div id="notificationDropdownList" style="max-height: 300px; overflow-y: auto; padding: 8px;">
+                    </div>
+                </div>
+            </div>
+            <select id="languageSelect" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: inherit; border-radius: 20px; padding: 8px 16px; font-weight: 600; cursor: pointer; backdrop-filter: blur(10px); appearance: none; -webkit-appearance: none;">
+                <option value="en" style="color: black;">EN</option>
+                <option value="hi" style="color: black;">HI</option>
+                <option value="mr" style="color: black;">MR</option>
+            </select>
+            <button id="themeToggleBtn" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: inherit; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(10px);"><i class="fas fa-moon"></i></button>
+        </div>
         <div class="main-content" id="mainContent">
             <div id="dashboardPage" class="dashboard-page">
                 <div class="stats-grid" id="statsGrid"></div>
+                <div class="bento-grid" style="margin-bottom: 24px;">
+                    <div class="bento-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-pie"></i> <span data-i18n="chart_donations">Donations by Campaign</span></h3>
+                        </div>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="donationsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bento-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-bar"></i> <span data-i18n="chart_operations">Operations by Sector</span></h3>
+                        </div>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="operationsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
                 <div class="bento-grid">
                     <div class="bento-card">
                         <div class="card-header">
-                            <h3><i class="fas fa-clock"></i> Recent Operations</h3>
+                            <h3><i class="fas fa-clock"></i> <span data-i18n="recent_ops">Recent Operations</span></h3>
                         </div>
                         <div id="recentOpsList"></div>
                     </div>
                     <div class="bento-card">
                         <div class="card-header">
-                            <h3><i data-lucide="alert-circle" style="width: 18px; height: 18px; margin-right: 8px; display: inline-block; vertical-align: middle;"></i> Unmet Needs</h3>
+                            <h3><i data-lucide="alert-circle"
+                                    style="width: 18px; height: 18px; margin-right: 8px; display: inline-block; vertical-align: middle;"></i>
+                                <span data-i18n="unmet_needs">Unmet Needs</span></h3>
                         </div>
                         <div id="unmetNeedsList" style="max-height: 300px; overflow-y: auto;"></div>
                     </div>
@@ -955,13 +1008,13 @@
                 <div class="bento-grid">
                     <div class="bento-card">
                         <div class="card-header">
-                            <h3><i class="fas fa-hand-holding-heart"></i> Recent Donations</h3>
+                            <h3><i class="fas fa-hand-holding-heart"></i> <span data-i18n="recent_donations">Recent Donations</span></h3>
                         </div>
                         <div id="recentDonationsList"></div>
                     </div>
                     <div class="bento-card">
                         <div class="card-header">
-                            <h3><i class="fas fa-chart-line"></i> Campaign Progress</h3>
+                            <h3><i class="fas fa-chart-line"></i> <span data-i18n="campaign_progress">Campaign Progress</span></h3>
                         </div>
                         <div id="campaignProgressList"></div>
                     </div>
@@ -969,37 +1022,37 @@
             </div>
             <div id="operationsPage" class="dashboard-page" style="display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                    <h2 style="font-size: 1.5rem; font-weight: 700;">Field Operations</h2>
+                    <h2 style="font-size: 1.5rem; font-weight: 700;" data-i18n="nav_field_ops">Field Operations</h2>
                 </div>
-                
+
                 <div class="glass-form-card" id="reportUnmetNeedContainer">
-                    <h3>Report Unmet Need</h3>
+                    <h3 data-i18n="report_need_title">Report Unmet Need</h3>
                     <div class="fluid-grid">
                         <div class="glass-input-wrapper">
                             <i data-lucide="package"></i>
                             <select id="unmetCategory">
-                                <option value="" disabled selected>Select Category</option>
-                                <option value="Food">Food Relief</option>
-                                <option value="Medical">Medical Aid</option>
-                                <option value="Water">Clean Water</option>
-                                <option value="Shelter">Shelter</option>
+                                <option value="" disabled selected data-i18n="select_category">Select Category</option>
+                                <option value="Food" data-i18n="cat_food">Food Relief</option>
+                                <option value="Medical" data-i18n="cat_medical">Medical Aid</option>
+                                <option value="Water" data-i18n="cat_water">Clean Water</option>
+                                <option value="Shelter" data-i18n="cat_shelter">Shelter</option>
                             </select>
                         </div>
                         <div class="glass-input-wrapper">
                             <i data-lucide="file-text"></i>
-                            <input type="text" id="unmetDescription" placeholder="Description (e.g., 500 meals)">
+                            <input type="text" id="unmetDescription" placeholder="Description (e.g., 500 meals)" data-i18n="desc_placeholder">
                         </div>
                         <div class="glass-input-wrapper">
                             <i data-lucide="map-pin"></i>
-                            <input type="text" id="unmetLocation" placeholder="Location">
+                            <input type="text" id="unmetLocation" placeholder="Location" data-i18n="location_placeholder">
                         </div>
                         <div class="glass-input-wrapper">
                             <i data-lucide="alert-triangle"></i>
                             <select id="unmetUrgency">
-                                <option value="" disabled selected>Urgency Level</option>
-                                <option value="Low">Low</option>
-                                <option value="Medium">Medium</option>
-                                <option value="High">High</option>
+                                <option value="" disabled selected data-i18n="urgency_level">Urgency Level</option>
+                                <option value="Low" data-i18n="urgency_low">Low</option>
+                                <option value="Medium" data-i18n="urgency_medium">Medium</option>
+                                <option value="High" data-i18n="urgency_high">High</option>
                             </select>
                         </div>
                         <div style="display: flex; align-items: stretch;">
@@ -1011,27 +1064,27 @@
                 </div>
 
                 <div class="glass-form-card">
-                    <h3>Log New Field Activity</h3>
+                    <h3 data-i18n="log_activity_title">Log New Field Activity</h3>
                     <div class="fluid-grid">
                         <div class="glass-input-wrapper">
                             <i class="fas fa-building"></i>
-                            <input type="text" id="opAgency" placeholder="Agency Name">
+                            <input type="text" id="opAgency" placeholder="Agency Name" data-i18n="agency_placeholder">
                         </div>
                         <div class="glass-input-wrapper">
                             <i class="fas fa-layer-group"></i>
-                            <input type="text" id="opSector" placeholder="Sector">
+                            <input type="text" id="opSector" placeholder="Sector" data-i18n="sector_placeholder">
                         </div>
                         <div class="glass-input-wrapper">
                             <i class="fas fa-map"></i>
-                            <input type="text" id="opZone" placeholder="Zone">
+                            <input type="text" id="opZone" placeholder="Zone" data-i18n="zone_placeholder">
                         </div>
                         <div class="glass-input-wrapper">
                             <i class="fas fa-users"></i>
-                            <input type="number" id="opBeneficiaries" placeholder="Beneficiaries">
+                            <input type="number" id="opBeneficiaries" placeholder="Beneficiaries" data-i18n="beneficiaries_placeholder">
                         </div>
                         <div class="glass-input-wrapper">
                             <i class="fas fa-map-marker-alt"></i>
-                            <input type="text" id="opLocation" placeholder="Location">
+                            <input type="text" id="opLocation" placeholder="Location" data-i18n="location_placeholder">
                         </div>
                         <div style="display: flex; align-items: stretch;">
                             <button id="logOpBtn" class="btn-antigravity">
@@ -1041,7 +1094,13 @@
                     </div>
                 </div>
                 <div class="bento-card">
-                    <h3>All Operations</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+                        <h3 data-i18n="all_ops_title" style="margin: 0;">All Operations</h3>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <input type="text" id="opsSearchInput" placeholder="Search operations..." data-i18n="search_ops" style="padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: inherit;" oninput="updateUI()">
+                            <button class="btn-antigravity" style="padding: 8px 16px;" onclick="exportToCSV(operationsData, 'operations_export.csv')"><i class="fas fa-file-export"></i> <span data-i18n="export_csv">Export CSV</span></button>
+                        </div>
+                    </div>
                     <div id="allOpsList" style="max-height: 400px; overflow-y: auto;"></div>
                 </div>
             </div>
@@ -1053,7 +1112,7 @@
             <div id="donationsPage" class="dashboard-page" style="display: none;">
                 <div class="bento-grid">
                     <div class="glass-form-card">
-                        <h3>Make a Donation</h3>
+                        <h3 data-i18n="make_donation_title">Make a Donation</h3>
                         <div style="display: flex; flex-direction: column; gap: 24px; position: relative; z-index: 1;">
                             <div class="glass-input-wrapper">
                                 <i class="fas fa-user"></i>
@@ -1066,20 +1125,20 @@
                             <div class="glass-input-wrapper">
                                 <i class="fas fa-hands-helping"></i>
                                 <select id="donationCampaign">
-                                    <option value="" disabled selected>Select Campaign</option>
-                                    <option value="food">Food Relief</option>
-                                    <option value="medical">Medical Aid</option>
-                                    <option value="shelter">Emergency Shelter</option>
-                                    <option value="water">Clean Water</option>
+                                    <option value="" disabled selected data-i18n="select_campaign">Select Campaign</option>
+                                    <option value="food" data-i18n="cat_food">Food Relief</option>
+                                    <option value="medical" data-i18n="cat_medical">Medical Aid</option>
+                                    <option value="shelter" data-i18n="cat_shelter">Emergency Shelter</option>
+                                    <option value="water" data-i18n="cat_water">Clean Water</option>
                                 </select>
                             </div>
                             <div class="glass-input-wrapper">
                                 <i class="fas fa-dollar-sign"></i>
-                                <input type="number" id="donationAmount" placeholder="Amount (USD)">
+                                <input type="number" id="donationAmount" placeholder="Amount (USD)" data-i18n="amount_placeholder">
                             </div>
                             <div class="glass-input-wrapper">
                                 <i class="fas fa-comment-dots" style="top: 26px; transform: none;"></i>
-                                <textarea id="donationMessage" rows="3" placeholder="Message (optional)"></textarea>
+                                <textarea id="donationMessage" rows="3" placeholder="Message (optional)" data-i18n="message_placeholder"></textarea>
                             </div>
                             <button id="submitDonationBtn" class="btn-antigravity" style="margin-top: 8px;">
                                 <i class="fas fa-heart"></i> Donate Now
@@ -1087,36 +1146,461 @@
                         </div>
                     </div>
                     <div class="bento-card">
-                        <h3>Recent Donors</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h3 data-i18n="recent_donors_title" style="margin: 0;">Recent Donors</h3>
+                            <button class="btn-antigravity" style="padding: 8px 16px;" onclick="exportToCSV(donationsData, 'donations_export.csv')"><i class="fas fa-file-export"></i> <span data-i18n="export_csv">Export CSV</span></button>
+                        </div>
                         <div id="donorsList"></div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
 
 
         <div id="toastNotification" class="toast-notification">
-            <i class="fas fa-check-circle"></i> Request Sent Successfully!
+            <i class="fas fa-check-circle"></i> <span data-i18n="toast_success" id="toastText">Request Sent Successfully!</span>
         </div>
 
         <div class="ai-float-circle" id="aiFloatBtn"><i class="fas fa-robot"></i></div>
         <div class="ai-popup" id="aiPopup">
             <div class="ai-popup-header">
-                <h3><i class="fas fa-microchip"></i> AI Agent</h3><button class="close-ai"
+                <h3><i class="fas fa-microchip"></i> <span data-i18n="ai_agent_title">AI Agent</span></h3><button class="close-ai"
                     id="closeAiPopup">&times;</button>
             </div>
             <div class="ai-chat-area" id="aiChatMessages">
-                <div class="ai-message ai-msg">🤖 AI Agent Ready. Ask me about coordination, donations, or recovery
+                <div class="ai-message ai-msg" id="aiWelcomeMsg">🤖 AI Agent Ready. Ask me about coordination, donations, or recovery
                     strategies!</div>
             </div>
-            <div class="ai-input-area"><input type="text" id="aiUserInput" placeholder="Ask me anything..."
+            <div class="ai-input-area"><input type="text" id="aiUserInput" placeholder="Ask me anything..." data-i18n="ai_placeholder"
                     onkeypress="if(event.key==='Enter') sendAIMessage()"><button id="sendAiBtn"><i
                         class="fas fa-paper-plane"></i></button></div>
         </div>
     </div>
 
     <script>
+        
+        // Translations Dictionary
+        const translations = {
+            en: {
+                app_title: "DisasterSync",
+                login_tab: "Login",
+                register_tab: "Register",
+                email_label: "Email",
+                email_placeholder: "Enter your email",
+                password_label: "Password",
+                password_placeholder: "Enter your password",
+                login_btn: "Login →",
+                full_name_label: "Full Name",
+                full_name_placeholder: "Your full name",
+                reg_password_placeholder: "Create a password",
+                role_label: "Role",
+                role_ops: "Operations Admin",
+                role_donations: "Donations Manager",
+                register_btn: "Register →",
+                nav_dashboard: "Dashboard",
+                nav_field_ops: "Field Ops",
+                nav_map: "Response Map",
+                nav_donations: "Donations",
+                nav_logout: "Logout",
+                stat_active_agencies: "Active Agencies",
+                stat_zones: "Zones Covered",
+                stat_beneficiaries: "Beneficiaries",
+                stat_donations: "Total Donations",
+                recent_ops: "Recent Operations",
+                unmet_needs: "Unmet Needs",
+                recent_donations: "Recent Donations",
+                campaign_progress: "Campaign Progress",
+                report_need_title: "Report Unmet Need",
+                select_category: "Select Category",
+                cat_food: "Food Relief",
+                cat_medical: "Medical Aid",
+                cat_water: "Clean Water",
+                cat_shelter: "Shelter",
+                select_campaign: "Select Campaign",
+                desc_placeholder: "Description (e.g., 500 meals)",
+                location_placeholder: "Location",
+                urgency_level: "Urgency Level",
+                urgency_low: "Low",
+                urgency_medium: "Medium",
+                urgency_high: "High",
+                report_need_btn: "Report Need",
+                log_activity_title: "Log New Field Activity",
+                agency_placeholder: "Agency Name",
+                sector_placeholder: "Sector",
+                zone_placeholder: "Zone",
+                beneficiaries_placeholder: "Beneficiaries",
+                log_activity_btn: "Log Activity",
+                all_ops_title: "All Operations",
+                make_donation_title: "Make a Donation",
+                donor_name_placeholder: "Full Name",
+                amount_placeholder: "Amount (USD)",
+                message_placeholder: "Message (optional)",
+                donate_btn: "Donate Now",
+                recent_donors_title: "Recent Donors",
+                ai_agent_title: "AI Agent",
+                ai_placeholder: "Ask me anything...",
+                toast_success: "Request Sent Successfully!",
+                no_active_needs: "No active unmet needs found.",
+                mark_completed: "Mark as Completed",
+                hq_title: "DisasterSync HQ",
+                hq_desc: "No active operations yet.<br>Log your first field activity!",
+                urgent_need: "Urgent Need",
+                desc_label: "Description",
+                loc_label: "Location",
+                req_label: "Requester",
+                sector_label: "Sector",
+                zone_label: "Zone",
+                ben_label: "Beneficiaries",
+                donated_text: "donated",
+                people: "people",
+                raised_of: "raised of",
+                funded: "funded",
+                ops_admin: "Operations Admin",
+                donations_mgr: "Donations Manager",
+                err_fill_all: "Please fill all fields",
+                err_password_len: "Password must be at least 6 characters",
+                reg_success: "Registration successful! Please login.",
+                err_enter_credentials: "Please enter email and password",
+                err_fill_unmet: "Please fill all fields for the unmet need.",
+                err_fill_required: "Please fill all required fields",
+                op_logged_success: "Operation logged successfully!",
+                donation_success: "Thank you {name}! Your donation of ${amount} has been recorded.",
+                unmet_success: "Unmet need reported successfully!",
+                need_completed: "Need marked as completed!",
+                success: "Success!",
+                db_error: "Database Error: ",
+                error: "Error: ",
+                anonymous: "Anonymous",
+                ai_welcome: "🤖 AI Agent Ready. Ask me about coordination, donations, or recovery strategies!",
+                ai_donations: "💰 Total donations raised",
+                ai_campaign: "Most needed campaign",
+                ai_ops: "📊 Active field operations",
+                ai_zones: "zones currently covered.",
+                ai_status: "Current status:",
+                ai_active_ops: "active operations,",
+                ai_donations_raised: "donations raised,",
+                ai_zones_covered: "zones covered.",
+                na: "N/A",
+                status_pending: "Pending",
+                status_completed: "Completed",
+                urgency_label: "Urgency",
+                export_csv: "Export CSV",
+                search_ops: "Search operations...",
+                chart_donations: "Donations by Campaign",
+                chart_operations: "Operations by Sector"
+            },
+            hi: {
+                app_title: "डिजास्टरसिंक",
+                login_tab: "लॉगिन",
+                register_tab: "रजिस्टर",
+                email_label: "ईमेल",
+                email_placeholder: "अपना ईमेल दर्ज करें",
+                password_label: "पासवर्ड",
+                password_placeholder: "अपना पासवर्ड दर्ज करें",
+                login_btn: "लॉगिन →",
+                full_name_label: "पूरा नाम",
+                full_name_placeholder: "आपका पूरा नाम",
+                reg_password_placeholder: "पासवर्ड बनाएं",
+                role_label: "भूमिका",
+                role_ops: "संचालन व्यवस्थापक",
+                role_donations: "दान प्रबंधक",
+                register_btn: "रजिस्टर →",
+                nav_dashboard: "डैशबोर्ड",
+                nav_field_ops: "फील्ड संचालन",
+                nav_map: "प्रतिक्रिया मानचित्र",
+                nav_donations: "दान",
+                nav_logout: "लॉगआउट",
+                stat_active_agencies: "सक्रिय एजेंसियां",
+                stat_zones: "कवर किए गए क्षेत्र",
+                stat_beneficiaries: "लाभार्थी",
+                stat_donations: "कुल दान",
+                recent_ops: "हाल के संचालन",
+                unmet_needs: "अधूरी जरूरतें",
+                recent_donations: "हाल का दान",
+                campaign_progress: "अभियान प्रगति",
+                report_need_title: "अधूरी जरूरत की रिपोर्ट करें",
+                select_category: "श्रेणी चुनें",
+                cat_food: "भोजन राहत",
+                cat_medical: "चिकित्सा सहायता",
+                cat_water: "साफ पानी",
+                cat_shelter: "आश्रय",
+                select_campaign: "अभियान चुनें",
+                desc_placeholder: "विवरण (जैसे, 500 भोजन)",
+                location_placeholder: "स्थान",
+                urgency_level: "तत्काल स्तर",
+                urgency_low: "कम",
+                urgency_medium: "मध्यम",
+                urgency_high: "उच्च",
+                report_need_btn: "जरूरत की रिपोर्ट करें",
+                log_activity_title: "नई फील्ड गतिविधि लॉग करें",
+                agency_placeholder: "एजेंसी का नाम",
+                sector_placeholder: "क्षेत्र",
+                zone_placeholder: "ज़ोन",
+                beneficiaries_placeholder: "लाभार्थी",
+                log_activity_btn: "गतिविधि लॉग करें",
+                all_ops_title: "सभी संचालन",
+                make_donation_title: "दान करें",
+                donor_name_placeholder: "पूरा नाम",
+                amount_placeholder: "राशि (USD)",
+                message_placeholder: "संदेश (वैकल्पिक)",
+                donate_btn: "अभी दान करें",
+                recent_donors_title: "हाल के दानकर्ता",
+                ai_agent_title: "एआई एजेंट",
+                ai_placeholder: "मुझसे कुछ भी पूछें...",
+                toast_success: "अनुरोध सफलतापूर्वक भेजा गया!",
+                no_active_needs: "कोई सक्रिय अधूरी जरूरत नहीं मिली।",
+                mark_completed: "पूरा हुआ के रूप में चिह्नित करें",
+                hq_title: "डिजास्टरसिंक मुख्यालय",
+                hq_desc: "अभी तक कोई सक्रिय संचालन नहीं।<br>अपनी पहली फील्ड गतिविधि लॉग करें!",
+                urgent_need: "तत्काल जरूरत",
+                desc_label: "विवरण",
+                loc_label: "स्थान",
+                req_label: "अनुरोधकर्ता",
+                sector_label: "क्षेत्र",
+                zone_label: "ज़ोन",
+                ben_label: "लाभार्थी",
+                donated_text: "ने दान दिया",
+                people: "लोग",
+                raised_of: "में से जुटाए",
+                funded: "वित्त पोषित",
+                ops_admin: "संचालन व्यवस्थापक",
+                donations_mgr: "दान प्रबंधक",
+                err_fill_all: "कृपया सभी फ़ील्ड भरें",
+                err_password_len: "पासवर्ड कम से कम 6 अक्षरों का होना चाहिए",
+                reg_success: "पंजीकरण सफल! कृपया लॉगिन करें।",
+                err_enter_credentials: "कृपया ईमेल और पासवर्ड दर्ज करें",
+                err_fill_unmet: "कृपया अधूरी जरूरत के लिए सभी फ़ील्ड भरें।",
+                err_fill_required: "कृपया सभी आवश्यक फ़ील्ड भरें",
+                op_logged_success: "संचालन सफलतापूर्वक लॉग किया गया!",
+                donation_success: "धन्यवाद {name}! आपका ${amount} का दान दर्ज कर लिया गया है।",
+                unmet_success: "अधूरी जरूरत सफलतापूर्वक रिपोर्ट की गई!",
+                need_completed: "जरूरत पूरी हो गई के रूप में चिह्नित!",
+                success: "सफलता!",
+                db_error: "डेटाबेस त्रुटि: ",
+                error: "त्रुटि: ",
+                anonymous: "अनाम",
+                ai_welcome: "🤖 एआई एजेंट तैयार। मुझसे समन्वय, दान या पुनर्प्राप्ति रणनीतियों के बारे में पूछें!",
+                ai_donations: "💰 कुल दान एकत्र:",
+                ai_campaign: "सबसे ज्यादा जरूरत वाला अभियान:",
+                ai_ops: "📊 सक्रिय फील्ड संचालन:",
+                ai_zones: "कवर किए गए क्षेत्र।",
+                ai_status: "वर्तमान स्थिति:",
+                ai_active_ops: "सक्रिय संचालन,",
+                ai_donations_raised: "एकत्र दान,",
+                ai_zones_covered: "कवर किए गए क्षेत्र।",
+                na: "लागू नहीं",
+                status_pending: "लंबित",
+                status_completed: "पूरा हुआ",
+                urgency_label: "तत्काल",
+                export_csv: "CSV निर्यात करें",
+                search_ops: "संचालन खोजें...",
+                chart_donations: "अभियान द्वारा दान",
+                chart_operations: "क्षेत्र द्वारा संचालन"
+            },
+            mr: {
+                app_title: "डिझास्टरसिंक",
+                login_tab: "लॉगिन",
+                register_tab: "नोंदणी",
+                email_label: "ईमेल",
+                email_placeholder: "तुमचा ईमेल प्रविष्ट करा",
+                password_label: "पासवर्ड",
+                password_placeholder: "तुमचा पासवर्ड प्रविष्ट करा",
+                login_btn: "लॉगिन →",
+                full_name_label: "पूर्ण नाव",
+                full_name_placeholder: "तुमचे पूर्ण नाव",
+                reg_password_placeholder: "पासवर्ड तयार करा",
+                role_label: "भूमिका",
+                role_ops: "ऑपरेशन्स प्रशासक",
+                role_donations: "देणगी व्यवस्थापक",
+                register_btn: "नोंदणी →",
+                nav_dashboard: "डॅशबोर्ड",
+                nav_field_ops: "फील्ड ऑपरेशन्स",
+                nav_map: "प्रतिसाद नकाशा",
+                nav_donations: "देणग्या",
+                nav_logout: "लॉगआउट",
+                stat_active_agencies: "सक्रिय एजन्सीज",
+                stat_zones: "कव्हर केलेले क्षेत्र",
+                stat_beneficiaries: "लाभार्थी",
+                stat_donations: "एकूण देणगी",
+                recent_ops: "अलीकडील ऑपरेशन्स",
+                unmet_needs: "अपूर्ण गरजा",
+                recent_donations: "अलीकडील देणग्या",
+                campaign_progress: "मोहीम प्रगती",
+                report_need_title: "अपूर्ण गरजेची नोंद करा",
+                select_category: "श्रेणी निवडा",
+                cat_food: "अन्न मदत",
+                cat_medical: "वैद्यकीय मदत",
+                cat_water: "स्वच्छ पाणी",
+                cat_shelter: "निवारा",
+                select_campaign: "मोहीम निवडा",
+                desc_placeholder: "वर्णन (उदा. ५०० जेवण)",
+                location_placeholder: "स्थान",
+                urgency_level: "तातडीची पातळी",
+                urgency_low: "कमी",
+                urgency_medium: "मध्यम",
+                urgency_high: "उच्च",
+                report_need_btn: "गरजेची नोंद करा",
+                log_activity_title: "नवीन फील्ड क्रियाकलाप लॉग करा",
+                agency_placeholder: "एजन्सीचे नाव",
+                sector_placeholder: "क्षेत्र",
+                zone_placeholder: "झोन",
+                beneficiaries_placeholder: "लाभार्थी",
+                log_activity_btn: "क्रियाकलाप लॉग करा",
+                all_ops_title: "सर्व ऑपरेशन्स",
+                make_donation_title: "देणगी द्या",
+                donor_name_placeholder: "पूर्ण नाव",
+                amount_placeholder: "रक्कम (USD)",
+                message_placeholder: "संदेश (पर्यायी)",
+                donate_btn: "आता देणगी द्या",
+                recent_donors_title: "अलीकडील देणगीदार",
+                ai_agent_title: "एआय एजंट",
+                ai_placeholder: "मला काहीही विचारा...",
+                toast_success: "विनंती यशस्वीरित्या पाठवली!",
+                no_active_needs: "कोणत्याही सक्रिय अपूर्ण गरजा आढळल्या नाहीत.",
+                mark_completed: "पूर्ण झाले म्हणून चिन्हांकित करा",
+                hq_title: "डिझास्टरसिंक मुख्यालय",
+                hq_desc: "अद्याप कोणतीही सक्रिय ऑपरेशन्स नाहीत.<br>तुमचा पहिला फील्ड क्रियाकलाप लॉग करा!",
+                urgent_need: "तातडीची गरज",
+                desc_label: "वर्णन",
+                loc_label: "स्थान",
+                req_label: "विनंतीकर्ता",
+                sector_label: "क्षेत्र",
+                zone_label: "झोन",
+                ben_label: "लाभार्थी",
+                donated_text: "ने देणगी दिली",
+                people: "लोक",
+                raised_of: "पैकी गोळा केले",
+                funded: "अनुदानीत",
+                ops_admin: "ऑपरेशन्स प्रशासक",
+                donations_mgr: "देणगी व्यवस्थापक",
+                err_fill_all: "कृपया सर्व फील्ड भरा",
+                err_password_len: "पासवर्ड किमान ६ अक्षरांचा असावा",
+                reg_success: "नोंदणी यशस्वी! कृपया लॉगिन करा.",
+                err_enter_credentials: "कृपया ईमेल आणि पासवर्ड प्रविष्ट करा",
+                err_fill_unmet: "कृपया अपूर्ण गरजेसाठी सर्व फील्ड भरा.",
+                err_fill_required: "कृपया सर्व आवश्यक फील्ड भरा",
+                op_logged_success: "ऑपरेशन यशस्वीरित्या लॉग केले!",
+                donation_success: "धन्यवाद {name}! तुमची ${amount} ची देणगी नोंदवली गेली आहे.",
+                unmet_success: "अपूर्ण गरज यशस्वीरित्या नोंदवली!",
+                need_completed: "गरज पूर्ण झाली म्हणून चिन्हांकित!",
+                success: "यशस्वी!",
+                db_error: "डेटाबेस त्रुटी: ",
+                error: "त्रुटी: ",
+                anonymous: "अनामित",
+                ai_welcome: "🤖 एआय एजंट तयार. मला समन्वय, देणग्या किंवा पुनर्प्राप्ती धोरणांबद्दल विचारा!",
+                ai_donations: "💰 एकूण देणगी गोळा:",
+                ai_campaign: "सर्वाधिक गरजेची मोहीम:",
+                ai_ops: "📊 सक्रिय फील्ड ऑपरेशन्स:",
+                ai_zones: "सध्या कव्हर केलेले झोन.",
+                ai_status: "सद्य स्थिती:",
+                ai_active_ops: "सक्रिय ऑपरेशन्स,",
+                ai_donations_raised: "गोळा केलेल्या देणग्या,",
+                ai_zones_covered: "कव्हर केलेले झोन.",
+                na: "लागू नाही",
+                status_pending: "प्रलंबित",
+                status_completed: "पूर्ण झाले",
+                urgency_label: "तातडीची",
+                export_csv: "CSV निर्यात करा",
+                search_ops: "ऑपरेशन्स शोधा...",
+                chart_donations: "मोहिमेनुसार देणग्या",
+                chart_operations: "क्षेत्रानुसार ऑपरेशन्स"
+            }
+        };
+
+        let currentLang = localStorage.getItem('disasterSyncLang') || 'en';
+
+        function formatNumber(num) {
+            if (currentLang === 'hi') return new Intl.NumberFormat('hi-IN', { numberingSystem: 'deva' }).format(num);
+            if (currentLang === 'mr') return new Intl.NumberFormat('mr-IN', { numberingSystem: 'deva' }).format(num);
+            return num.toLocaleString();
+        }
+
+        const dynamicTranslationCache = {};
+
+        async function translateText(text) {
+            if (!text || currentLang === 'en') return text;
+            const cacheKey = `${text}_${currentLang}`;
+            if (dynamicTranslationCache[cacheKey]) return dynamicTranslationCache[cacheKey];
+            
+            try {
+                const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${currentLang}&dt=t&q=${encodeURIComponent(text)}`;
+                const res = await fetch(url);
+                const data = await res.json();
+                const translatedText = data[0].map(item => item[0]).join('');
+                dynamicTranslationCache[cacheKey] = translatedText;
+                return translatedText;
+            } catch (e) {
+                console.error("Translation failed for:", text, e);
+                return text;
+            }
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('disasterSyncLang', lang);
+            
+            const t = translations[lang] || translations.en;
+            
+            // Translate static elements with data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = t[key];
+                    } else if (el.tagName === 'OPTION') {
+                        el.innerText = t[key];
+                    } else {
+                        // Some have icons
+                        const icon = el.querySelector('i');
+                        if (icon) {
+                            el.innerHTML = '';
+                            el.appendChild(icon);
+                            el.append(' ' + t[key]);
+                        } else {
+                            el.innerText = t[key];
+                        }
+                    }
+                }
+            });
+
+            // Translate User Info if visible
+            const userInfoDisplay = document.getElementById('userInfoDisplay');
+            if (userInfoDisplay && currentUser) {
+                const displayName = currentUser?.user_metadata?.full_name || currentUser?.email || 'User';
+                const roleText = currentRole === 'ops' || currentRole === 'operations' ? 
+                                `<i class="fas fa-hard-hat"></i> ${t.ops_admin}` : 
+                                `<i class="fas fa-hand-holding-usd"></i> ${t.donations_mgr}`;
+                userInfoDisplay.innerHTML = `
+                    <i class="fas fa-user-circle" style="font-size: 1.5rem; margin-bottom: 8px; color: #8B5CF6;"></i>
+                    <div style="font-weight: 600;">${displayName}</div>
+                    <div style="font-size: 0.8rem; color: #64748B; margin-top: 4px;">
+                        ${roleText}
+                    </div>
+                `;
+            }
+
+            if (typeof updateUI === 'function') {
+                updateUI();
+            }
+
+            const aiWelcome = document.getElementById('aiWelcomeMsg');
+            if (aiWelcome) {
+                aiWelcome.innerText = t.ai_welcome;
+            }
+        }
+
+        // Initialize language
+        document.addEventListener('DOMContentLoaded', () => {
+            const langSelect = document.getElementById('languageSelect');
+            if (langSelect) {
+                langSelect.value = currentLang;
+                langSelect.addEventListener('change', (e) => setLanguage(e.target.value));
+            }
+            setLanguage(currentLang);
+        });
+
+
         // Supabase Configuration
         const SUPABASE_URL = 'https://pmigoitplpvuzolcjhql.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_L6ln1guRH2RPoUg3obDLGg_vdHSBfkv';
@@ -1132,18 +1616,19 @@
 
         // Auth Functions
         async function register() {
+            const t = translations[currentLang] || translations.en;
             const fullName = document.getElementById('regName').value;
             const email = document.getElementById('regEmail').value;
             const password = document.getElementById('regPassword').value;
             const role = document.getElementById('regRole').value;
 
             if (!fullName || !email || !password) {
-                document.getElementById('registerError').innerText = 'Please fill all fields';
+                document.getElementById('registerError').innerText = t.err_fill_all;
                 return;
             }
 
             if (password.length < 6) {
-                document.getElementById('registerError').innerText = 'Password must be at least 6 characters';
+                document.getElementById('registerError').innerText = t.err_password_len;
                 return;
             }
 
@@ -1169,7 +1654,7 @@
                 }
 
                 document.getElementById('registerError').style.color = '#10B981';
-                document.getElementById('registerError').innerText = 'Registration successful! Please login.';
+                document.getElementById('registerError').innerText = t.reg_success;
                 setTimeout(() => {
                     document.querySelector('.auth-tab[data-auth="login"]').click();
                     document.getElementById('registerError').innerText = '';
@@ -1178,11 +1663,12 @@
         }
 
         async function login() {
+            const t = translations[currentLang] || translations.en;
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
 
             if (!email || !password) {
-                document.getElementById('loginError').innerText = 'Please enter email and password';
+                document.getElementById('loginError').innerText = t.err_enter_credentials;
                 return;
             }
 
@@ -1205,13 +1691,7 @@
 
                 document.getElementById('authContainer').style.display = 'none';
                 document.getElementById('dashboardContainer').classList.add('active');
-                document.getElementById('userInfoDisplay').innerHTML = `
-                    <i class="fas fa-user-circle" style="font-size: 1.5rem; margin-bottom: 8px; color: #8B5CF6;"></i>
-                    <div style="font-weight: 600;">${displayName}</div>
-                    <div style="font-size: 0.8rem; color: #64748B; margin-top: 4px;">
-                        ${currentRole === 'ops' || currentRole === 'operations' ? '<i class="fas fa-hard-hat"></i> Operations Admin' : '<i class="fas fa-hand-holding-usd"></i> Donations Manager'}
-                    </div>
-                `;
+                setLanguage(currentLang); // Update UI and User Info translations
 
                 // Role Based UI Access
                 if (currentRole === 'ops' || currentRole === 'operations') {
@@ -1237,7 +1717,7 @@
             document.getElementById('authContainer').style.display = 'flex';
             document.getElementById('loginEmail').value = '';
             document.getElementById('loginPassword').value = '';
-            
+
             // Reset tab visibility and active page
             document.querySelector('[data-page="operations"]').style.display = '';
             document.querySelector('[data-page="map"]').style.display = '';
@@ -1250,7 +1730,7 @@
             await loadDonationNeeds();
             await loadOperations();
             await loadDonations();
-            await loadResourceRequests();
+            await loadUnmetNeeds();
             updateUI();
         }
 
@@ -1280,20 +1760,22 @@
         }
 
         function showToast(message) {
+            const t = translations[currentLang] || translations.en;
             const toast = document.getElementById('toastNotification');
-            toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message || 'Success!'}`;
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message || t.success}`;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
         async function submitUnmetNeed() {
+            const t = translations[currentLang] || translations.en;
             const category = document.getElementById('unmetCategory').value;
             const description = document.getElementById('unmetDescription').value;
             const location = document.getElementById('unmetLocation').value;
             const urgency = document.getElementById('unmetUrgency').value;
-            
+
             if (!category || !description || !location || !urgency) {
-                alert('Please fill all fields for the unmet need.');
+                alert(t.err_fill_unmet);
                 return;
             }
 
@@ -1309,9 +1791,10 @@
             }]);
 
             if (error) {
+                alert(t.db_error + error.message + '\nDetails: ' + JSON.stringify(error));
                 console.warn('Supabase insert failed, using local fallback:', error.message);
                 unmetNeedsData.unshift({
-                    id: Date.now().toString(),
+                    id: crypto.randomUUID(),
                     created_at: new Date().toISOString(),
                     category: category,
                     description: description,
@@ -1328,12 +1811,13 @@
             document.getElementById('unmetDescription').value = '';
             document.getElementById('unmetLocation').value = '';
             document.getElementById('unmetUrgency').value = '';
-            
-            showToast('Unmet need reported successfully!');
+
+            showToast(t.unmet_success);
             updateUI();
         }
 
         async function completeUnmetNeed(id) {
+            const t = translations[currentLang] || translations.en;
             const { error } = await supabaseClient
                 .from('unmet_needs')
                 .update({ status: 'Completed' })
@@ -1350,13 +1834,14 @@
                 await loadUnmetNeeds();
             }
 
-            showToast('Need marked as completed!');
+            showToast(t.need_completed);
             updateUI();
         }
 
         async function addOperation(agency, sector, zone, beneficiaries, locationName) {
+            const t = translations[currentLang] || translations.en;
             if (!agency || !sector || !zone) {
-                alert('Please fill all required fields');
+                alert(t.err_fill_required);
                 return;
             }
             const { error } = await supabaseClient.from('operations').insert([{
@@ -1372,7 +1857,7 @@
             if (!error) {
                 await loadOperations();
                 updateUI();
-                alert('Operation logged successfully!');
+                alert(t.op_logged_success);
                 document.getElementById('opAgency').value = '';
                 document.getElementById('opSector').value = '';
                 document.getElementById('opZone').value = '';
@@ -1380,13 +1865,14 @@
                 document.getElementById('opLocation').value = '';
                 updateMapMarkers();
             } else {
-                alert('Error: ' + error.message);
+                alert(t.error + error.message);
             }
         }
 
         async function addDonation(name, email, amount, campaign, message) {
+            const t = translations[currentLang] || translations.en;
             if (!name || !email || !amount || amount <= 0) {
-                alert('Please fill all required fields');
+                alert(t.err_fill_required);
                 return;
             }
             const { error } = await supabaseClient.from('donations').insert([{
@@ -1405,57 +1891,91 @@
                 await loadDonationNeeds();
                 await loadDonations();
                 updateUI();
-                alert(`Thank you ${name}! Your donation of $${amount} has been recorded.`);
+                alert(t.donation_success.replace('{name}', name).replace('{amount}', amount));
                 document.getElementById('donorName').value = '';
                 document.getElementById('donorEmail').value = '';
                 document.getElementById('donationAmount').value = '';
                 document.getElementById('donationMessage').value = '';
             } else {
-                alert('Error: ' + error.message);
+                alert(t.error + error.message);
             }
         }
 
         // UI Update
-        function updateUI() {
+        async function updateUI() {
+            const t = translations[currentLang] || translations.en;
             const totalDonations = (donationsData || []).reduce((s, d) => s + (d.amount || 0), 0);
             const totalOps = (operationsData || []).length;
             const uniqueZones = new Set((operationsData || []).map(o => o.zone)).size;
             const totalBeneficiaries = (operationsData || []).reduce((s, o) => s + (o.beneficiaries || 0), 0);
 
             const statsHtml = `
-                <div class="stat-card"><div class="stat-label">Active Agencies</div><div class="stat-number">${new Set((operationsData || []).map(o => o.agency)).size}</div></div>
-                <div class="stat-card"><div class="stat-label">Zones Covered</div><div class="stat-number">${uniqueZones}</div></div>
-                <div class="stat-card"><div class="stat-label">Beneficiaries</div><div class="stat-number">${totalBeneficiaries.toLocaleString()}</div></div>
-                <div class="stat-card"><div class="stat-label">Total Donations</div><div class="stat-number">$${totalDonations.toLocaleString()}</div></div>`;
+                <div class="stat-card"><div class="stat-label" data-i18n="stat_active_agencies">${t.stat_active_agencies || 'Active Agencies'}</div><div class="stat-number">${formatNumber(new Set((operationsData || []).map(o => o.agency)).size)}</div></div>
+                <div class="stat-card"><div class="stat-label" data-i18n="stat_zones">${t.stat_zones || 'Zones Covered'}</div><div class="stat-number">${formatNumber(uniqueZones)}</div></div>
+                <div class="stat-card"><div class="stat-label" data-i18n="stat_beneficiaries">${t.stat_beneficiaries || 'Beneficiaries'}</div><div class="stat-number">${formatNumber(totalBeneficiaries)}</div></div>
+                <div class="stat-card"><div class="stat-label" data-i18n="stat_donations">${t.stat_donations || 'Total Donations'}</div><div class="stat-number">$${formatNumber(totalDonations)}</div></div>`;
 
             const statsGrid = document.getElementById('statsGrid');
             if (statsGrid) statsGrid.innerHTML = statsHtml;
 
             const recentOps = document.getElementById('recentOpsList');
             if (recentOps) {
-                recentOps.innerHTML = (operationsData || []).slice(0, 5).map(o => `<div class="activity-item"><strong>${o.agency}</strong> - ${o.sector} @ ${o.zone}<div style="font-size:0.7rem;">${o.beneficiaries || 0} people</div></div>`).join('');
+                const opsHtml = await Promise.all((operationsData || []).slice(0, 5).map(async o => {
+                    const agency = await translateText(o.agency);
+                    const sector = await translateText(o.sector);
+                    const zone = await translateText(o.zone);
+                    const location = await translateText(o.location_name || '');
+                    return `<div class="activity-item"><strong>${agency}</strong> - ${sector} @ ${zone}${location ? ' (' + location + ')' : ''}<div style="font-size:0.7rem;">${formatNumber(o.beneficiaries || 0)} ${t.people || 'people'}</div></div>`;
+                }));
+                recentOps.innerHTML = opsHtml.join('');
             }
 
             const recentDonations = document.getElementById('recentDonationsList');
             if (recentDonations) {
-                recentDonations.innerHTML = (donationsData || []).slice(0, 5).map(d => `<div class="activity-item" style="border-left-color:#8B5CF6;"><strong>${d.donor_name}</strong> donated $${(d.amount || 0).toLocaleString()}<div style="font-size:0.7rem;">${d.message || 'Thank you!'}</div></div>`).join('');
+                const donHtml = await Promise.all((donationsData || []).slice(0, 5).map(async d => {
+                    const donor_name = await translateText(d.donor_name);
+                    const message = await translateText(d.message || 'Thank you!');
+                    return `<div class="activity-item" style="border-left-color:#8B5CF6;"><strong>${donor_name}</strong> ${t.donated_text || 'donated'} $${formatNumber(d.amount || 0)}<div style="font-size:0.7rem;">${message}</div></div>`;
+                }));
+                recentDonations.innerHTML = donHtml.join('');
             }
 
             const allOps = document.getElementById('allOpsList');
+            const searchInput = document.getElementById('opsSearchInput');
+            const query = searchInput ? searchInput.value.toLowerCase() : '';
             if (allOps) {
-                allOps.innerHTML = (operationsData || []).map(o => `<div class="activity-item"><strong>${o.agency}</strong> - ${o.sector} in ${o.zone}<div>👥 ${o.beneficiaries || 0}</div></div>`).join('');
+                const filteredOps = (operationsData || []).filter(o => 
+                    !query || (o.agency && o.agency.toLowerCase().includes(query)) || 
+                    (o.sector && o.sector.toLowerCase().includes(query)) || 
+                    (o.zone && o.zone.toLowerCase().includes(query)) ||
+                    (o.location_name && o.location_name.toLowerCase().includes(query))
+                );
+                const allOpsHtml = await Promise.all(filteredOps.map(async o => {
+                    const agency = await translateText(o.agency);
+                    const sector = await translateText(o.sector);
+                    const zone = await translateText(o.zone);
+                    const location = await translateText(o.location_name || '');
+                    return `<div class="activity-item" style="animation: fadeInUp 0.5s ease;"><strong>${agency}</strong> - ${sector} @ ${zone}${location ? ' (' + location + ')' : ''}<div>👥 ${formatNumber(o.beneficiaries || 0)} ${t.people || 'people'}</div></div>`;
+                }));
+                allOps.innerHTML = allOpsHtml.join('');
             }
 
             const donorsList = document.getElementById('donorsList');
             if (donorsList) {
-                donorsList.innerHTML = (donationsData || []).slice(0, 10).map(d => `<div style="padding:12px; border-bottom:1px solid #E2E8F0;"><strong>${d.donor_name}</strong> $${(d.amount || 0).toLocaleString()}<div style="font-size:0.7rem;">${d.message || ''}</div></div>`).join('');
+                const dlHtml = await Promise.all((donationsData || []).slice(0, 10).map(async d => {
+                    const donor_name = await translateText(d.donor_name);
+                    const message = await translateText(d.message || '');
+                    return `<div style="padding:12px; border-bottom:1px solid #E2E8F0;"><strong>${donor_name}</strong> $${formatNumber(d.amount || 0)}<div style="font-size:0.7rem;">${message}</div></div>`;
+                }));
+                donorsList.innerHTML = dlHtml.join('');
             }
 
             const campaignProgress = document.getElementById('campaignProgressList');
             if (campaignProgress && Object.keys(donationNeeds).length) {
                 const campaignHtml = Object.entries(donationNeeds).map(([k, v]) => {
-                    const percent = ((v.collected || 0) / (v.required || 1) * 100).toFixed(1);
-                    return `<div class="campaign-item"><h3>${v.icon || '📦'} ${v.name}</h3><div class="progress-bar"><div class="progress-fill" style="width: ${percent}%"></div></div><p>$${(v.collected || 0).toLocaleString()} raised of $${(v.required || 0).toLocaleString()}</p><p>${percent}% funded</p></div>`;
+                    const percentNum = ((v.collected || 0) / (v.required || 1) * 100);
+                    const translatedName = t['cat_' + k.toLowerCase()] || v.name;
+                    return `<div class="campaign-item"><h3>${v.icon || '📦'} ${translatedName}</h3><div class="progress-bar"><div class="progress-fill" style="width: ${percentNum.toFixed(1)}%"></div></div><p>$${formatNumber(v.collected || 0)} ${t.raised_of || 'raised of'} $${formatNumber(v.required || 0)}</p><p>${formatNumber(percentNum.toFixed(1))}% ${t.funded || 'funded'}</p></div>`;
                 }).join('');
                 campaignProgress.innerHTML = campaignHtml;
             }
@@ -1463,35 +1983,78 @@
             const unmetNeedsList = document.getElementById('unmetNeedsList');
             if (unmetNeedsList) {
                 if (unmetNeedsData.length === 0) {
-                    unmetNeedsList.innerHTML = '<div style="padding: 16px; color: #64748B;">No active unmet needs found.</div>';
+                    unmetNeedsList.innerHTML = `<div style="padding: 16px; color: #64748B;">${t.no_active_needs || 'No active unmet needs found.'}</div>`;
                 } else {
-                    unmetNeedsList.innerHTML = unmetNeedsData.map(req => {
+                    const reqHtml = await Promise.all(unmetNeedsData.map(async req => {
                         const badgeClass = req.status === 'Pending' ? 'badge-pending' : 'badge-assigned';
                         const urgencyColor = req.urgency === 'High' ? '#EF4444' : req.urgency === 'Medium' ? '#F59E0B' : '#10B981';
                         
+                        const translatedCategory = t['cat_' + req.category.toLowerCase()] || req.category;
+                        const translatedStatus = req.status === 'Pending' ? t.status_pending : (req.status === 'Completed' ? t.status_completed : req.status);
+                        const translatedUrgency = t['urgency_' + (req.urgency || '').toLowerCase()] || req.urgency;
+
+                        const desc = await translateText(req.description);
+                        const loc = await translateText(req.location);
+                        const reqName = await translateText(req.requester_name || t.anonymous);
+
                         return `
                             <div class="unmet-need-item" style="border-left: 4px solid ${urgencyColor}">
                                 <div style="flex: 1;">
                                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                                        <strong>${req.category}</strong>
-                                        <span class="badge ${badgeClass}">${req.status}</span>
-                                        ${req.urgency ? `<span class="badge" style="background: ${urgencyColor}20; color: ${urgencyColor}; border: 1px solid ${urgencyColor}40;">${req.urgency} Urgency</span>` : ''}
+                                        <strong>${translatedCategory}</strong>
+                                        <span class="badge ${badgeClass}">${translatedStatus}</span>
+                                        ${req.urgency ? `<span class="badge" style="background: ${urgencyColor}20; color: ${urgencyColor}; border: 1px solid ${urgencyColor}40;">${translatedUrgency} ${t.urgency_label}</span>` : ''}
                                     </div>
                                     <div style="font-size: 0.85rem; color: #64748B;">
-                                        <i class="fas fa-file-alt"></i> ${req.description} &nbsp;&bull;&nbsp;
-                                        <i class="fas fa-map-marker-alt"></i> ${req.location} &nbsp;&bull;&nbsp;
-                                        <i class="fas fa-user"></i> ${req.requester_name || 'Anonymous'}
+                                        <i class="fas fa-file-alt"></i> ${desc} &nbsp;&bull;&nbsp;
+                                        <i class="fas fa-map-marker-alt"></i> ${loc} &nbsp;&bull;&nbsp;
+                                        <i class="fas fa-user"></i> ${reqName}
                                     </div>
                                 </div>
-                                ${currentRole === 'ops' ? `<button class="assign-btn" style="background: linear-gradient(135deg, #10B981, #059669);" onclick="completeUnmetNeed('${req.id}')"><i class="fas fa-check"></i> Mark as Completed</button>` : ''}
+                                ${currentRole === 'ops' ? `<button class="assign-btn" style="background: linear-gradient(135deg, #10B981, #059669);" onclick="completeUnmetNeed('${req.id}')"><i class="fas fa-check"></i> ${t.mark_completed || 'Mark as Completed'}</button>` : ''}
                             </div>
                         `;
-                    }).join('');
+                    }));
+                    unmetNeedsList.innerHTML = reqHtml.join('');
                 }
             }
 
+            // Notifications
+            const highUrgencyNeeds = unmetNeedsData.filter(req => req.urgency === 'High' && req.status === 'Pending');
+            const badge = document.getElementById('notificationBadge');
+            const countLabel = document.getElementById('notificationCountLabel');
+            const dropList = document.getElementById('notificationDropdownList');
+            if (badge) {
+                if (highUrgencyNeeds.length > 0) {
+                    badge.innerText = formatNumber(highUrgencyNeeds.length);
+                    badge.style.display = 'flex';
+                    if (countLabel) countLabel.innerText = formatNumber(highUrgencyNeeds.length);
+                    
+                    if (dropList) {
+                        const notifHtml = await Promise.all(highUrgencyNeeds.slice(0, 5).map(async req => {
+                            const desc = await translateText(req.description);
+                            const loc = await translateText(req.location);
+                            return `<div style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; color: #E2E8F0;">
+                                <div style="font-weight: 600; margin-bottom: 4px; color: #FCA5A5;">${desc}</div>
+                                <div><i class="fas fa-map-marker-alt"></i> ${loc}</div>
+                                <div style="font-size: 0.75rem; color: #94A3B8; margin-top: 4px;">Requested by: ${req.requester_name || t.anonymous}</div>
+                            </div>`;
+                        }));
+                        if (highUrgencyNeeds.length > 5) {
+                            notifHtml.push(`<div style="padding: 10px; text-align: center; font-size: 0.8rem; color: #8B5CF6; cursor: pointer;" onclick="document.querySelector('[data-page=\\'operations\\']').click(); document.getElementById('notificationDropdown').style.display='none';">View all...</div>`);
+                        }
+                        dropList.innerHTML = notifHtml.join('');
+                    }
+                } else {
+                    badge.style.display = 'none';
+                    if (countLabel) countLabel.innerText = '0';
+                    if (dropList) dropList.innerHTML = `<div style="padding: 16px; text-align: center; color: #94A3B8; font-size: 0.85rem;">No urgent needs.</div>`;
+                }
+            }
+
+            renderCharts();
             updateMapMarkers();
-            
+
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }
@@ -1515,108 +2078,225 @@
             }
         }
 
-        function updateMapMarkers() {
-            if (!fullMap) return;
+        const geocodeCache = {
+            'mumbai': [19.0760, 72.8777],
+            'delhi': [28.7041, 77.1025],
+            'chennai': [13.0827, 80.2707],
+            'kolkata': [22.5726, 88.3639],
+            'bangalore': [12.9716, 77.5946],
+            'hyderabad': [17.3850, 78.4867],
+            'pune': [18.5204, 73.8567],
+            'ahmedabad': [23.0225, 72.5714],
+            'nepal': [28.3949, 84.1240],
+            'bhuj': [23.2420, 69.6669],
+            'mira bhayandar': [19.2952, 72.8544],
+            'mira road': [19.2841, 72.8691],
+            'navghar': [19.3082, 72.8530],
+            'india': [20.5937, 78.9629]
+        };
 
-            // Clear existing markers
+        async function getCoordinatesAsync(locationString) {
+            if (!locationString) return null;
+            const normalized = locationString.toLowerCase().trim();
+
+            for (const [city, coords] of Object.entries(geocodeCache)) {
+                if (normalized.includes(city)) return coords;
+            }
+
+            try {
+                const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(normalized)}&limit=1`);
+                const data = await res.json();
+                if (data && data.length > 0) {
+                    const coords = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+                    geocodeCache[normalized] = coords; // Cache to avoid duplicate requests
+                    return coords;
+                }
+            } catch (e) {
+                console.error("Geocoding failed:", e);
+            }
+            return null;
+        }
+
+        async function updateMapMarkers() {
+            if (!fullMap) return;
+            const t = translations[currentLang] || translations.en;
+
             fullMap.eachLayer((layer) => {
                 if (layer instanceof L.Marker) {
                     fullMap.removeLayer(layer);
                 }
             });
 
-            // Case-insensitive coordinate helper for major Indian cities
-            const getCoordinates = (locationString) => {
-                if (!locationString) return null;
-                const normalized = locationString.toLowerCase().trim();
-                const cities = {
-                    'mumbai': [19.0760, 72.8777],
-                    'delhi': [28.7041, 77.1025],
-                    'chennai': [13.0827, 80.2707],
-                    'kolkata': [22.5726, 88.3639],
-                    'bangalore': [12.9716, 77.5946],
-                    'hyderabad': [17.3850, 78.4867],
-                    'pune': [18.5204, 73.8567],
-                    'ahmedabad': [23.0225, 72.5714]
-                };
-                for (const [city, coords] of Object.entries(cities)) {
-                    if (normalized.includes(city)) return coords;
-                }
-                return null;
-            };
+            if (operationsData.length === 0 && unmetNeedsData.length === 0) {
+                const defaultMarker = L.marker([20.5937, 78.9629]).addTo(fullMap);
+                defaultMarker.bindPopup(`<b>${t.hq_title}</b><br>${t.hq_desc}`);
+                return;
+            }
 
-            operationsData.forEach(op => {
+            const drawMarker = async (data, isUnmetNeed = false) => {
+                const locStr = isUnmetNeed ? data.location : (data.location_name || data.zone);
+                let coords = await getCoordinatesAsync(locStr);
+                
                 let lat = null, lng = null;
-                const coords = getCoordinates(op.location_name) || getCoordinates(op.zone);
-
                 if (coords) {
-                    lat = coords[0] + (Math.random() * 0.05 - 0.025); // Add jitter to prevent stacking
-                    lng = coords[1] + (Math.random() * 0.05 - 0.025);
-                } else if (op.lat && op.lng) {
-                    lat = op.lat + (Math.random() * 0.05 - 0.025);
-                    lng = op.lng + (Math.random() * 0.05 - 0.025);
+                    lat = coords[0] + (Math.random() * 0.02 - 0.01);
+                    lng = coords[1] + (Math.random() * 0.02 - 0.01);
+                } else if (data.lat && data.lng) {
+                    lat = data.lat + (Math.random() * 0.02 - 0.01);
+                    lng = data.lng + (Math.random() * 0.02 - 0.01);
                 } else {
-                    // Fallback to random coordinates in central India
                     lat = 20.5937 + (Math.random() * 5 - 2.5);
                     lng = 78.9629 + (Math.random() * 5 - 2.5);
                 }
 
                 if (lat && lng) {
-                    const markerColor = op.sector === 'food' ? '#2c9c7c' :
-                        op.sector === 'medical' ? '#3498db' :
-                            op.sector === 'shelter' ? '#e67e22' : '#f39c12';
+                    if (isUnmetNeed) {
+                        const alertIcon = L.divIcon({
+                            html: '<div style="background:#F59E0B; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 2px 5px rgba(0,0,0,0.3);"><i class="fas fa-exclamation"></i></div>',
+                            className: '',
+                            iconSize: [24, 24],
+                            iconAnchor: [12, 12]
+                        });
+                        const marker = L.marker([lat, lng], { icon: alertIcon }).addTo(fullMap);
+                        const translatedCategory = t['cat_' + data.category.toLowerCase()] || data.category;
+                        const desc = await translateText(data.description);
+                        const loc = await translateText(data.location);
+                        const reqName = await translateText(data.requester_name || t.anonymous);
 
-                    const marker = L.marker([lat, lng]).addTo(fullMap);
-                    marker.bindPopup(`
-                        <b>${op.agency}</b><br>
-                        Sector: ${op.sector}<br>
-                        Zone: ${op.zone}<br>
-                        Beneficiaries: ${op.beneficiaries || 0}<br>
-                        Location: ${op.location_name || op.zone}
-                    `);
+                        marker.bindPopup(`
+                            <b style="color: #F59E0B;">${t.urgent_need}: ${translatedCategory}</b><br>
+                            ${t.desc_label}: ${desc}<br>
+                            ${t.loc_label}: ${loc}<br>
+                            ${t.req_label}: ${reqName}
+                        `);
+                    } else {
+                        const marker = L.marker([lat, lng]).addTo(fullMap);
+                        const agency = await translateText(data.agency);
+                        const sector = await translateText(data.sector);
+                        const zone = await translateText(data.zone);
+                        const lStr = await translateText(locStr);
+
+                        marker.bindPopup(`
+                            <b>${agency}</b><br>
+                            ${t.sector_label}: ${sector}<br>
+                            ${t.zone_label}: ${zone}<br>
+                            ${t.ben_label}: ${formatNumber(data.beneficiaries || 0)}<br>
+                            ${t.loc_label}: ${lStr}
+                        `);
+                    }
+                }
+            };
+
+            await Promise.all([
+                ...operationsData.map(op => drawMarker(op, false)),
+                ...unmetNeedsData.map(req => drawMarker(req, true))
+            ]);
+        }
+
+        // Features
+        let donationsChartInstance = null;
+        let operationsChartInstance = null;
+
+        async function renderCharts() {
+            const t = translations[currentLang] || translations.en;
+            if (!document.getElementById('donationsChart') || typeof Chart === 'undefined') return;
+
+            // Donations Chart
+            const labels = [];
+            const dataVals = [];
+            const bgColors = ['#8B5CF6', '#10B981', '#F59E0B', '#3B82F6', '#EF4444'];
+            
+            for (const [k, v] of Object.entries(donationNeeds)) {
+                labels.push(t['cat_' + k.toLowerCase()] || v.name);
+                dataVals.push(v.collected || 0);
+            }
+
+            const ctxDon = document.getElementById('donationsChart').getContext('2d');
+            if (donationsChartInstance) donationsChartInstance.destroy();
+            donationsChartInstance = new Chart(ctxDon, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: dataVals,
+                        backgroundColor: bgColors,
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: isDark ? '#fff' : '#333', font: { family: 'Inter' } } }
+                    }
                 }
             });
 
-            // If no markers, add a default marker at India center
-            if (operationsData.length === 0 && unmetNeedsData.length === 0) {
-                const defaultMarker = L.marker([20.5937, 78.9629]).addTo(fullMap);
-                defaultMarker.bindPopup('<b>DisasterSync HQ</b><br>No active operations yet.<br>Log your first field activity!');
+            // Operations Chart
+            const sectorCounts = {};
+            operationsData.forEach(op => {
+                const s = (op.sector || 'Other').toLowerCase();
+                sectorCounts[s] = (sectorCounts[s] || 0) + 1;
+            });
+            const opLabels = [];
+            const opVals = [];
+            for (const [s, count] of Object.entries(sectorCounts)) {
+                opLabels.push(await translateText(s));
+                opVals.push(count);
             }
 
-            // Plot pending unmet needs
-            unmetNeedsData.forEach(req => {
-                let lat = null, lng = null;
-                const coords = getCoordinates(req.location);
-                
-                if (coords) {
-                    lat = coords[0] + (Math.random() * 0.05 - 0.025);
-                    lng = coords[1] + (Math.random() * 0.05 - 0.025);
-                } else {
-                    lat = 20.5937 + (Math.random() * 5 - 2.5);
-                    lng = 78.9629 + (Math.random() * 5 - 2.5);
-                }
-
-                if (lat && lng) {
-                    const alertIcon = L.divIcon({
-                        html: '<div style="background:#F59E0B; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 2px 5px rgba(0,0,0,0.3);"><i class="fas fa-exclamation"></i></div>',
-                        className: '',
-                        iconSize: [24, 24],
-                        iconAnchor: [12, 12]
-                    });
-
-                    const marker = L.marker([lat, lng], { icon: alertIcon }).addTo(fullMap);
-                    marker.bindPopup(`
-                        <b style="color: #F59E0B;">Urgent Need: ${req.category}</b><br>
-                        Description: ${req.description}<br>
-                        Location: ${req.location}<br>
-                        Requester: ${req.requester_name || 'Anonymous'}
-                    `);
+            const ctxOp = document.getElementById('operationsChart').getContext('2d');
+            if (operationsChartInstance) operationsChartInstance.destroy();
+            operationsChartInstance = new Chart(ctxOp, {
+                type: 'bar',
+                data: {
+                    labels: opLabels,
+                    datasets: [{
+                        label: t.chart_operations || 'Operations',
+                        data: opVals,
+                        backgroundColor: '#8B5CF6',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: isDark ? '#ccc' : '#666', stepSize: 1 }, grid: { color: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' } },
+                        x: { ticks: { color: isDark ? '#ccc' : '#666' }, grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
                 }
             });
         }
 
+        function exportToCSV(dataArray, filename) {
+            if (!dataArray || !dataArray.length) return;
+            const headers = Object.keys(dataArray[0]);
+            const csvRows = [];
+            csvRows.push(headers.join(','));
+            for (const row of dataArray) {
+                const values = headers.map(header => {
+                    const val = row[header] === null || row[header] === undefined ? '' : String(row[header]);
+                    return `"${val.replace(/"/g, '""')}"`;
+                });
+                csvRows.push(values.join(','));
+            }
+            const csvData = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+            const csvUrl = URL.createObjectURL(csvData);
+            const hiddenElement = document.createElement('a');
+            hiddenElement.href = csvUrl;
+            hiddenElement.target = '_blank';
+            hiddenElement.download = filename;
+            hiddenElement.click();
+        }
+
         // AI Agent
         function sendAIMessage() {
+            const t = translations[currentLang] || translations.en;
             const input = document.getElementById('aiUserInput');
             const msg = input.value.trim();
             if (!msg) return;
@@ -1629,12 +2309,12 @@
                 const totalDonations = (donationsData || []).reduce((s, d) => s + (d.amount || 0), 0);
                 let response = '';
                 const q = msg.toLowerCase();
-                if (q.includes('donation') || q.includes('fund')) {
-                    response = `💰 Total donations raised: $${totalDonations.toLocaleString()}. Most needed campaign: ${Object.entries(donationNeeds).sort((a, b) => ((a[1].collected || 0) / (a[1].required || 1)) - ((b[1].collected || 0) / (b[1].required || 1)))[0]?.[1]?.name || 'N/A'}.`;
-                } else if (q.includes('operation') || q.includes('field')) {
-                    response = `📊 Active field operations: ${operationsData.length}. ${new Set((operationsData || []).map(o => o.zone)).size} zones currently covered.`;
+                if (q.includes('donation') || q.includes('fund') || q.includes('दान') || q.includes('देणगी')) {
+                    response = `${t.ai_donations} $${formatNumber(totalDonations)}. ${t.ai_campaign} ${Object.entries(donationNeeds).sort((a, b) => ((a[1].collected || 0) / (a[1].required || 1)) - ((b[1].collected || 0) / (b[1].required || 1)))[0]?.[1]?.name || t.na}.`;
+                } else if (q.includes('operation') || q.includes('field') || q.includes('संचालन') || q.includes('ऑपरेशन्स')) {
+                    response = `${t.ai_ops} ${formatNumber(operationsData.length)}. ${formatNumber(new Set((operationsData || []).map(o => o.zone)).size)} ${t.ai_zones}`;
                 } else {
-                    response = `Current status: ${operationsData.length} active operations, $${totalDonations.toLocaleString()} donations raised, ${new Set((operationsData || []).map(o => o.zone)).size} zones covered.`;
+                    response = `${t.ai_status} ${formatNumber(operationsData.length)} ${t.ai_active_ops} $${formatNumber(totalDonations)} ${t.ai_donations_raised} ${formatNumber(new Set((operationsData || []).map(o => o.zone)).size)} ${t.ai_zones_covered}`;
                 }
                 chat.innerHTML += `<div class="ai-message ai-msg">🤖 ${response}</div>`;
                 chat.scrollTop = chat.scrollHeight;
@@ -1750,7 +2430,7 @@
                 login();
             }
         });
-        
+
         // Initialize Lucide icons on load
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof lucide !== 'undefined') {
